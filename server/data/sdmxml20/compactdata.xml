@@ -1,0 +1,27 @@
+<message:CompactData xmlns="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/message"
+    xmlns:common="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/common"
+    xmlns:compact="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/compact"
+    xmlns:OECD="http://oecd.stat.org/Data"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:message="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/message" xsi:schemaLocation="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/message http://www.sdmx.org/docs/2_0/SDMXMessage.xsd http://oecd.stat.org/Data https://stats-1.oecd.org/RestSDMX/sdmx.ashx/GetSchema/QNA">
+    <Header>
+        <ID>none</ID>
+        <Test>false</Test>
+        <Truncated>false</Truncated>
+        <Prepared>2023-02-26T06:51:18</Prepared>
+        <Sender id="OECD">
+            <Name xml:lang="en">Organisation for Economic Co-operation and Development</Name>
+            <Name xml:lang="fr">Organisation de coopération et de développement économiques</Name>
+        </Sender>
+    </Header>
+    <OECD:DataSet xmlns:OECD="http://oecd.stat.org/Data" keyFamilyURI="https://stats-1.oecd.org/RestSDMX/sdmx.ashx/GetKeyFamily/QNA">
+        <OECD:Series LOCATION="AUS" SUBJECT="B1_GE" MEASURE="VOBARSA" FREQUENCY="Q" TIME_FORMAT="P3M" UNIT="AUD" POWERCODE="6" REFERENCEPERIOD="2015">
+            <OECD:Obs TIME="2009-Q2" OBS_VALUE="1396893"/>
+            <OECD:Obs TIME="2009-Q3" OBS_VALUE="1401636.8"/>
+        </OECD:Series>
+        <OECD:Series LOCATION="AUT" SUBJECT="B1_GE" MEASURE="VOBARSA" FREQUENCY="Q" TIME_FORMAT="P3M" UNIT="EUR" POWERCODE="6" REFERENCEPERIOD="2015">
+            <OECD:Obs TIME="2009-Q2" OBS_VALUE="318469.1"/>
+            <OECD:Obs TIME="2009-Q3" OBS_VALUE="319685.5"/>
+        </OECD:Series>
+    </OECD:DataSet>
+</message:CompactData>

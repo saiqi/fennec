@@ -1,0 +1,26 @@
+<message:Structure xmlns:message="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/message"
+    xmlns:structure="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/structure"
+    xmlns:common="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/common">
+    <message:Header>
+        <message:ID>IDREF96</message:ID>
+        <message:Test>false</message:Test>
+        <message:Prepared>2023-01-28T11:57:57.3373494+01:00</message:Prepared>
+        <message:Sender id="Unknown" />
+        <message:Receiver id="Unknown" />
+    </message:Header>
+    <message:Structures>
+        <structure:OrganisationSchemes>
+            <structure:AgencyScheme id="AGENCIES" urn="urn:sdmx:org.sdmx.infomodel.base.AgencyScheme=SDMX:AGENCIES(1.0)" agencyID="SDMX" version="1.0" isFinal="false">
+                <common:Name xml:lang="en">SDMX Agency Scheme</common:Name>
+                <structure:Agency id="SDMX" urn="urn:sdmx:org.sdmx.infomodel.base.Agency=SDMX">
+                    <common:Name xml:lang="en">SDMX</common:Name>
+                    <common:Description xml:lang="en">SDMX is an initiative to foster standards for the exchange of statistical information.</common:Description>
+                </structure:Agency>
+                <structure:Agency id="IMF" urn="urn:sdmx:org.sdmx.infomodel.base.Agency=IMF">
+                    <common:Name xml:lang="en">International Monetary Fund (IMF)</common:Name>
+                    <common:Description xml:lang="en">The IMF works to foster global growth and economic stability.</common:Description>
+                </structure:Agency>
+            </structure:AgencyScheme>
+        </structure:OrganisationSchemes>
+    </message:Structures>
+</message:Structure>

@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<message:StructureSpecificData xmlns:ss="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/data/structurespecific"
+    xmlns:footer="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/message/footer"
+    xmlns:ns1="urn:sdmx:org.sdmx.infomodel.datastructure.Dataflow=FR1:BALANCE-PAIEMENTS(1.0):ObsLevelDim:TIME_PERIOD"
+    xmlns:message="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/message"
+    xmlns:common="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/common"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xml="http://www.w3.org/XML/1998/namespace">
+    <message:Header>
+        <message:ID>BALANCE-PAIEMENTS_1673606931460</message:ID>
+        <message:Test>false</message:Test>
+        <message:Prepared>2023-01-13T11:48:51</message:Prepared>
+        <message:Sender id="FR1">
+            <common:Name xml:lang="fr">Institut national de la statistique et des études économiques</common:Name>
+        </message:Sender>
+        <message:Structure structureID="FR1_BALANCE-PAIEMENTS_1_0" namespace="urn:sdmx:org.sdmx.infomodel.datastructure.Dataflow=FR1:BALANCE-PAIEMENTS(1.0):ObsLevelDim:TIME_PERIOD" dimensionAtObservation="TIME_PERIOD">
+            <common:StructureUsage>
+                <Ref agencyID="FR1" id="BALANCE-PAIEMENTS" version="1.0"/>
+            </common:StructureUsage>
+        </message:Structure>
+        <message:Source xml:lang="fr">Banque de données macro-économiques</message:Source>
+    </message:Header>
+    <message:DataSet ss:dataScope="DataStructure" xsi:type="ns1:DataSetType" ss:structureRef="FR1_BALANCE-PAIEMENTS_1_0">
+        <Series BASIND="SO" CORRECTION="BRUT" COMPTE="CREDITS" FREQ="M" UNIT_MULT="6" INDICATEUR="BALANCE_DES_PAIEMENTS" UNIT_MEASURE="EUROS" NATURE="VALEUR_ABSOLUE" REF_AREA="FE" INSTRUMENTS_BALANCE_PAIEMENTS="181" IDBANK="001694087" TITLE_FR="Balance des paiements - Crédit - Transactions courantes - Revenus primaires - Revenus des investissements - Revenus des avoirs de réserve - Données brutes" TITLE_EN="Balance of payments - Credit - Current transactions - Primary income - Investment income - Reserve assets - Raw data" LAST_UPDATE="2023-01-09" DECIMALS="0">
+            <Obs TIME_PERIOD="2022-11" OBS_VALUE="203" OBS_STATUS="A" OBS_QUAL="DEF" OBS_TYPE="A"/>
+            <Obs TIME_PERIOD="2022-10" OBS_VALUE="183" OBS_STATUS="A" OBS_QUAL="DEF" OBS_TYPE="A"/>
+        </Series>
+        <Series BASIND="SO" CORRECTION="CVS" COMPTE="CREDITS" FREQ="M" UNIT_MULT="6" INDICATEUR="BALANCE_DES_PAIEMENTS" UNIT_MEASURE="EUROS" NATURE="VALEUR_ABSOLUE" REF_AREA="FE" INSTRUMENTS_BALANCE_PAIEMENTS="181" IDBANK="001694088" TITLE_FR="Balance des paiements - Crédit - Transactions courantes - Revenus primaires - Revenus des investissements - Revenus des avoirs de réserve - Données CVS" TITLE_EN="Balance of payments - Credit - Current transactions - Primary income - Investment income - Reserve assets - SA data" LAST_UPDATE="2023-01-09" DECIMALS="0">
+            <Obs TIME_PERIOD="2022-11" OBS_VALUE="215" OBS_STATUS="A" OBS_QUAL="DEF" OBS_TYPE="A"/>
+            <Obs TIME_PERIOD="2022-10" OBS_VALUE="188" OBS_STATUS="A" OBS_REV="1" OBS_QUAL="DEF" OBS_TYPE="A"/>
+        </Series>
+    </message:DataSet>
+</message:StructureSpecificData>

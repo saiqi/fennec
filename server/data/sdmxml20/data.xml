@@ -1,0 +1,62 @@
+<message:MessageGroup xmlns="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/generic"
+    xmlns:common="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/common"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:message="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/message" xsi:schemaLocation="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/generic http://www.sdmx.org/docs/2_0/SDMXGenericData.xsd http://www.SDMX.org/resources/SDMXML/schemas/v2_0/message http://www.sdmx.org/docs/2_0/SDMXMessage.xsd">
+    <Header xmlns="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/message">
+        <ID>none</ID>
+        <Test>false</Test>
+        <Truncated>false</Truncated>
+        <Prepared>2023-02-26T06:49:01</Prepared>
+        <Sender id="OECD">
+            <Name xml:lang="en">Organisation for Economic Co-operation and Development</Name>
+            <Name xml:lang="fr">Organisation de coopération et de développement économiques</Name>
+        </Sender>
+    </Header>
+    <DataSet keyFamilyURI="https://stats-1.oecd.org/RestSDMX/sdmx.ashx/GetKeyFamily/QNA">
+        <KeyFamilyRef>QNA</KeyFamilyRef>
+        <Series>
+            <SeriesKey>
+                <Value concept="LOCATION" value="AUS"/>
+                <Value concept="SUBJECT" value="B1_GE"/>
+                <Value concept="MEASURE" value="VOBARSA"/>
+                <Value concept="FREQUENCY" value="Q"/>
+            </SeriesKey>
+            <Attributes>
+                <Value concept="TIME_FORMAT" value="P3M"/>
+                <Value concept="UNIT" value="AUD"/>
+                <Value concept="POWERCODE" value="6"/>
+                <Value concept="REFERENCEPERIOD" value="2015"/>
+            </Attributes>
+            <Obs>
+                <Time>2009-Q2</Time>
+                <ObsValue value="1396893"/>
+            </Obs>
+            <Obs>
+                <Time>2009-Q3</Time>
+                <ObsValue value="1401636.8"/>
+            </Obs>
+        </Series>
+        <Series>
+            <SeriesKey>
+                <Value concept="LOCATION" value="AUT"/>
+                <Value concept="SUBJECT" value="B1_GE"/>
+                <Value concept="MEASURE" value="VOBARSA"/>
+                <Value concept="FREQUENCY" value="Q"/>
+            </SeriesKey>
+            <Attributes>
+                <Value concept="TIME_FORMAT" value="P3M"/>
+                <Value concept="UNIT" value="EUR"/>
+                <Value concept="POWERCODE" value="6"/>
+                <Value concept="REFERENCEPERIOD" value="2015"/>
+            </Attributes>
+            <Obs>
+                <Time>2009-Q2</Time>
+                <ObsValue value="318469.1"/>
+            </Obs>
+            <Obs>
+                <Time>2009-Q3</Time>
+                <ObsValue value="319685.5"/>
+            </Obs>
+        </Series>
+    </DataSet>
+</message:MessageGroup>

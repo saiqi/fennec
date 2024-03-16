@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<message:GenericData xmlns:footer="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/message/footer"
+    xmlns:generic="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/data/generic"
+    xmlns:common="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/common"
+    xmlns:message="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/message"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xml="http://www.w3.org/XML/1998/namespace">
+    <message:Header>
+        <message:ID>BALANCE-PAIEMENTS_1673611396963</message:ID>
+        <message:Test>false</message:Test>
+        <message:Prepared>2023-01-13T13:03:16</message:Prepared>
+        <message:Sender id="FR1">
+            <common:Name xml:lang="fr">Institut national de la statistique et des études économiques</common:Name>
+        </message:Sender>
+        <message:Structure structureID="FR1_BALANCE-PAIEMENTS_1_0" dimensionAtObservation="TIME_PERIOD">
+            <common:StructureUsage>
+                <Ref agencyID="FR1" id="BALANCE-PAIEMENTS" version="1.0"/>
+            </common:StructureUsage>
+        </message:Structure>
+        <message:Source xml:lang="fr">Banque de données macro-économiques</message:Source>
+    </message:Header>
+    <message:DataSet structureRef="FR1_BALANCE-PAIEMENTS_1_0">
+        <generic:Series>
+            <generic:SeriesKey>
+                <generic:Value id="BASIND" value="SO"/>
+                <generic:Value id="CORRECTION" value="BRUT"/>
+                <generic:Value id="COMPTE" value="CREDITS"/>
+                <generic:Value id="FREQ" value="M"/>
+                <generic:Value id="UNIT_MULT" value="6"/>
+                <generic:Value id="INDICATEUR" value="BALANCE_DES_PAIEMENTS"/>
+                <generic:Value id="UNIT_MEASURE" value="EUROS"/>
+                <generic:Value id="NATURE" value="VALEUR_ABSOLUE"/>
+                <generic:Value id="REF_AREA" value="FE"/>
+                <generic:Value id="INSTRUMENTS_BALANCE_PAIEMENTS" value="181"/>
+            </generic:SeriesKey>
+            <generic:Attributes>
+                <generic:Value id="IDBANK" value="001694087"/>
+                <generic:Value id="TITLE_FR" value="Balance des paiements - Crédit - Transactions courantes - Revenus primaires - Revenus des investissements - Revenus des avoirs de réserve - Données brutes"/>
+                <generic:Value id="TITLE_EN" value="Balance of payments - Credit - Current transactions - Primary income - Investment income - Reserve assets - Raw data"/>
+                <generic:Value id="LAST_UPDATE" value="2023-01-09"/>
+                <generic:Value id="DECIMALS" value="0"/>
+            </generic:Attributes>
+            <generic:Obs>
+                <generic:ObsDimension value="2022-11"/>
+                <generic:ObsValue value="203"/>
+                <generic:Attributes>
+                    <generic:Value id="OBS_STATUS" value="A"/>
+                    <generic:Value id="OBS_QUAL" value="DEF"/>
+                    <generic:Value id="OBS_TYPE" value="A"/>
+                </generic:Attributes>
+            </generic:Obs>
+            <generic:Obs>
+                <generic:ObsDimension value="2022-10"/>
+                <generic:ObsValue value="183"/>
+                <generic:Attributes>
+                    <generic:Value id="OBS_STATUS" value="A"/>
+                    <generic:Value id="OBS_QUAL" value="DEF"/>
+                    <generic:Value id="OBS_TYPE" value="A"/>
+                </generic:Attributes>
+            </generic:Obs>
+        </generic:Series>
+        <generic:Series>
+            <generic:SeriesKey>
+                <generic:Value id="BASIND" value="SO"/>
+                <generic:Value id="CORRECTION" value="CVS"/>
+                <generic:Value id="COMPTE" value="CREDITS"/>
+                <generic:Value id="FREQ" value="M"/>
+                <generic:Value id="UNIT_MULT" value="6"/>
+                <generic:Value id="INDICATEUR" value="BALANCE_DES_PAIEMENTS"/>
+                <generic:Value id="UNIT_MEASURE" value="EUROS"/>
+                <generic:Value id="NATURE" value="VALEUR_ABSOLUE"/>
+                <generic:Value id="REF_AREA" value="FE"/>
+                <generic:Value id="INSTRUMENTS_BALANCE_PAIEMENTS" value="181"/>
+            </generic:SeriesKey>
+            <generic:Attributes>
+                <generic:Value id="IDBANK" value="001694088"/>
+                <generic:Value id="TITLE_FR" value="Balance des paiements - Crédit - Transactions courantes - Revenus primaires - Revenus des investissements - Revenus des avoirs de réserve - Données CVS"/>
+                <generic:Value id="TITLE_EN" value="Balance of payments - Credit - Current transactions - Primary income - Investment income - Reserve assets - SA data"/>
+                <generic:Value id="LAST_UPDATE" value="2023-01-09"/>
+                <generic:Value id="DECIMALS" value="0"/>
+            </generic:Attributes>
+            <generic:Obs>
+                <generic:ObsDimension value="2022-11"/>
+                <generic:ObsValue value="215"/>
+                <generic:Attributes>
+                    <generic:Value id="OBS_STATUS" value="A"/>
+                    <generic:Value id="OBS_QUAL" value="DEF"/>
+                    <generic:Value id="OBS_TYPE" value="A"/>
+                </generic:Attributes>
+            </generic:Obs>
+            <generic:Obs>
+                <generic:ObsDimension value="2022-10"/>
+                <generic:ObsValue value="188"/>
+                <generic:Attributes>
+                    <generic:Value id="OBS_STATUS" value="A"/>
+                    <generic:Value id="OBS_REV" value="1"/>
+                    <generic:Value id="OBS_QUAL" value="DEF"/>
+                    <generic:Value id="OBS_TYPE" value="A"/>
+                </generic:Attributes>
+            </generic:Obs>
+        </generic:Series>
+    </message:DataSet>
+</message:GenericData>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Structure xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/message" xsi:schemaLocation="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/structure https://registry.sdmx.org/schemas/v2_0/SDMXStructure.xsd http://www.SDMX.org/resources/SDMXML/schemas/v2_0/message https://registry.sdmx.org/schemas/v2_0/SDMXMessage.xsd">
+    <Header>
+        <ID>30726e95-6dd9-466f-b380-e602aa553299</ID>
+        <Test>false</Test>
+        <Prepared>2023-01-28T12:46:48</Prepared>
+        <Sender id="1C0">
+            <Name xml:lang="en">IMF</Name>
+            <Contact>
+                <URI>http://www.imf.org</URI>
+                <Telephone>+ 1 (202) 623-6220</Telephone>
+            </Contact>
+        </Sender>
+        <Receiver id="ZZZ" />
+    </Header>
+    <CodeLists>
+        <CodeList id="CL_UNIT_MULT" agencyID="IMF" version="1.0" isFinal="true"
+            xmlns="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/structure">
+            <Name xml:lang="en">Scale</Name>
+            <Code value="0">
+                <Description xml:lang="en">Units</Description>
+            </Code>
+        </CodeList>
+        <CodeList id="CL_FREQ" agencyID="IMF" version="1.0" isFinal="true"
+            xmlns="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/structure">
+            <Name xml:lang="en">Frequency</Name>
+            <Description xml:lang="en">Frequency</Description>
+            <Code value="A">
+                <Description xml:lang="en">Annual</Description>
+            </Code>
+        </CodeList>
+        <CodeList id="CL_AREA_BOP_2017M06" agencyID="IMF" version="1.0" isFinal="true"
+            xmlns="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/structure">
+            <Name xml:lang="en">Geographical Areas</Name>
+            <Code value="AF">
+                <Description xml:lang="en">Afghanistan</Description>
+            </Code>
+        </CodeList>
+        <CodeList id="CL_INDICATOR_BOP_2017M06" agencyID="IMF" version="1.0" isFinal="true"
+            xmlns="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/structure">
+            <Name xml:lang="en">Indicator</Name>
+            <Code value="IADDF_BP6_EUR">
+                <Description xml:lang="en">Assets, Direct Investment, Debt Instruments, Between Fellow Enterprises, Euros</Description>
+            </Code>
+        </CodeList>
+        <CodeList id="CL_TIME_FORMAT" agencyID="IMF" version="1.0" isFinal="true"
+            xmlns="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/structure">
+            <Name xml:lang="en">Time format</Name>
+            <Description xml:lang="en">Time formats based on ISO 8601.</Description>
+            <Code value="P1Y">
+                <Description xml:lang="en">Annual</Description>
+            </Code>
+        </CodeList>
+    </CodeLists>
+    <Concepts>
+        <ConceptScheme id="BOP_2017M06" agencyID="IMF" version="1.0" isFinal="true"
+            xmlns="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/structure">
+            <Name xml:lang="en">Balance of Payments (BOP), 2017 M06</Name>
+            <Concept id="OBS_VALUE" agencyID="IMF" version="1.0">
+                <Name xml:lang="en">Value</Name>
+                <TextFormat textType="Double" />
+            </Concept>
+            <Concept id="UNIT_MULT" agencyID="IMF" version="1.0">
+                <Name xml:lang="en">Scale</Name>
+            </Concept>
+            <Concept id="TIME_FORMAT" agencyID="IMF" version="1.0">
+                <Name xml:lang="en">Time format</Name>
+                <Description xml:lang="en">Time formats based on ISO 8601.</Description>
+            </Concept>
+            <Concept id="FREQ" agencyID="IMF" version="1.0">
+                <Name xml:lang="en">Frequency</Name>
+            </Concept>
+            <Concept id="REF_AREA" agencyID="IMF" version="1.0">
+                <Name xml:lang="en">Reference Area</Name>
+            </Concept>
+            <Concept id="INDICATOR" agencyID="IMF" version="1.0">
+                <Name xml:lang="en">Indicator</Name>
+            </Concept>
+            <Concept id="TIME_PERIOD" agencyID="IMF" version="1.0">
+                <Name xml:lang="en">Date</Name>
+                <TextFormat textType="DateTime" />
+            </Concept>
+            <Concept id="OBS_STATUS" agencyID="IMF" version="1.0">
+                <Name xml:lang="en">Observation Status (incl. Confidentiality)</Name>
+                <TextFormat textType="String" />
+            </Concept>
+            <Concept id="OFFICIAL_BPM" agencyID="IMF" version="1.0">
+                <Name xml:lang="en">Official BPM6</Name>
+                <TextFormat textType="String" />
+            </Concept>
+        </ConceptScheme>
+    </Concepts>
+    <KeyFamilies>
+        <KeyFamily id="BOP_2017M06" agencyID="IMF" version="1.0" isFinal="true"
+            xmlns="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/structure">
+            <Name xml:lang="en">Balance of Payments (BOP), 2017 M06</Name>
+            <Components>
+                <Dimension conceptRef="FREQ" conceptVersion="1.0" conceptSchemeRef="BOP_2017M06" conceptSchemeAgency="IMF" codelist="CL_FREQ" codelistVersion="1.0" codelistAgency="IMF" isFrequencyDimension="true" />
+                <Dimension conceptRef="REF_AREA" conceptVersion="1.0" conceptSchemeRef="BOP_2017M06" conceptSchemeAgency="IMF" codelist="CL_AREA_BOP_2017M06" codelistVersion="1.0" codelistAgency="IMF" />
+                <Dimension conceptRef="INDICATOR" conceptVersion="1.0" conceptSchemeRef="BOP_2017M06" conceptSchemeAgency="IMF" codelist="CL_INDICATOR_BOP_2017M06" codelistVersion="1.0" codelistAgency="IMF" />
+                <TimeDimension conceptRef="TIME_PERIOD" conceptVersion="1.0" conceptSchemeRef="BOP_2017M06" conceptSchemeAgency="IMF" />
+                <PrimaryMeasure conceptRef="OBS_VALUE" conceptVersion="1.0" conceptSchemeRef="BOP_2017M06" conceptSchemeAgency="IMF">
+                    <TextFormat textType="Double" />
+                </PrimaryMeasure>
+                <Attribute conceptRef="UNIT_MULT" conceptVersion="1.0" conceptSchemeRef="BOP_2017M06" conceptSchemeAgency="IMF" codelist="CL_UNIT_MULT" codelistVersion="1.0" codelistAgency="IMF" attachmentLevel="Series" assignmentStatus="Mandatory" />
+                <Attribute conceptRef="OBS_STATUS" conceptVersion="1.0" conceptSchemeRef="BOP_2017M06" conceptSchemeAgency="IMF" attachmentLevel="Observation" assignmentStatus="Conditional">
+                    <TextFormat textType="String" />
+                </Attribute>
+                <Attribute conceptRef="OFFICIAL_BPM" conceptVersion="1.0" conceptSchemeRef="BOP_2017M06" conceptSchemeAgency="IMF" attachmentLevel="Observation" assignmentStatus="Conditional">
+                    <TextFormat textType="String" />
+                </Attribute>
+                <Attribute conceptRef="TIME_FORMAT" conceptVersion="1.0" conceptSchemeRef="BOP_2017M06" conceptSchemeAgency="IMF" codelist="CL_TIME_FORMAT" codelistVersion="1.0" codelistAgency="IMF" attachmentLevel="Series" assignmentStatus="Mandatory" isTimeFormat="true" />
+            </Components>
+        </KeyFamily>
+    </KeyFamilies>
+</Structure>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mes:Structure xmlns:mes="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/message"
+  xmlns:com="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/common"
+  xmlns:str="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/structure">
+  <mes:Header>
+    <mes:ID>categoryscheme_CLASSEMENT_DATAFLOWS_1673432493049</mes:ID>
+    <mes:Test>false</mes:Test>
+    <mes:Prepared>2023-01-11T11:21:33.049+01:00</mes:Prepared>
+    <mes:Sender id="FR1">
+      <com:Name xml:lang="fr">Institut national de la statistique et des études économiques</com:Name>
+    </mes:Sender>
+    <mes:Receiver id="unknown"/>
+    <mes:Source xml:lang="fr">Banque de données macro-économiques</mes:Source>
+  </mes:Header>
+  <mes:Structures>
+    <str:CategorySchemes>
+      <str:CategoryScheme id="CLASSEMENT_DATAFLOWS" urn="urn:sdmx:org.sdmx.infomodel.categoryscheme.CategoryScheme=FR1:CLASSEMENT_DATAFLOWS(1.0)" agencyID="FR1" version="1.0">
+        <com:Name xml:lang="fr">Classement des dataflows</com:Name>
+        <com:Name xml:lang="en">Dataflows categorisation</com:Name>
+        <str:Category id="ECO" urn="urn:sdmx:org.sdmx.infomodel.categoryscheme.Category=FR1:CLASSEMENT_DATAFLOWS(1.0).ECO">
+          <com:Name xml:lang="fr">Économie – Conjoncture – Comptes nationaux</com:Name>
+          <com:Name xml:lang="en">Economy – Economic outlook – National accounts</com:Name>
+          <str:Category id="COMMERCE_EXT" urn="urn:sdmx:org.sdmx.infomodel.categoryscheme.Category=FR1:CLASSEMENT_DATAFLOWS(1.0).ECO.COMMERCE_EXT">
+            <com:Name xml:lang="fr">Commerce extérieur</com:Name>
+            <com:Name xml:lang="en">Foreign trade</com:Name>
+          </str:Category>
+        </str:Category>
+      </str:CategoryScheme>
+    </str:CategorySchemes>
+  </mes:Structures>
+</mes:Structure>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mes:Structure xmlns:mes="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/message"
+    xmlns:com="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/common"
+    xmlns:str="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/structure">
+    <mes:Header>
+        <mes:ID>conceptscheme_CONCEPTS_INSEE_1673685442761</mes:ID>
+        <mes:Test>false</mes:Test>
+        <mes:Prepared>2023-01-14T09:37:22.761+01:00</mes:Prepared>
+        <mes:Sender id="FR1">
+            <com:Name xml:lang="fr">Institut national de la statistique et des études économiques</com:Name>
+        </mes:Sender>
+        <mes:Receiver id="unknown"/>
+        <mes:Source xml:lang="fr">Banque de données macro-économiques</mes:Source>
+    </mes:Header>
+    <mes:Structures>
+        <str:Concepts>
+            <str:ConceptScheme id="CONCEPTS_INSEE" urn="urn:sdmx:org.sdmx.infomodel.conceptscheme.ConceptScheme=FR1:CONCEPTS_INSEE(1.0)" agencyID="FR1" version="1.0">
+                <com:Name xml:lang="fr">Concepts Insee</com:Name>
+                <com:Name xml:lang="en">Insee concepts</com:Name>
+                <str:Concept id="FREQ" urn="urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=FR1:CONCEPTS_INSEE(1.0).FREQ">
+                    <com:Name xml:lang="fr">Périodicité</com:Name>
+                    <com:Name xml:lang="en">Frequency</com:Name>
+                </str:Concept>
+                <str:Concept id="INDICATEUR" urn="urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=FR1:CONCEPTS_INSEE(1.0).INDICATEUR">
+                    <com:Name xml:lang="fr">Indicateurs</com:Name>
+                    <com:Name xml:lang="en">Indicators</com:Name>
+                </str:Concept>
+                <str:Concept id="COMPTE" urn="urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=FR1:CONCEPTS_INSEE(1.0).COMPTE">
+                    <com:Name xml:lang="fr">Nature</com:Name>
+                    <com:Name xml:lang="en">Nature</com:Name>
+                </str:Concept>
+                <str:Concept id="INSTRUMENT" urn="urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=FR1:CONCEPTS_INSEE(1.0).INSTRUMENT">
+                    <com:Name xml:lang="fr">Rubriques ou postes</com:Name>
+                    <com:Name xml:lang="en">Headings or items</com:Name>
+                </str:Concept>
+                <str:Concept id="NATURE" urn="urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=FR1:CONCEPTS_INSEE(1.0).NATURE">
+                    <com:Name xml:lang="fr">Nature</com:Name>
+                    <com:Name xml:lang="en">Nature</com:Name>
+                </str:Concept>
+                <str:Concept id="GEOGRAPHIE" urn="urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=FR1:CONCEPTS_INSEE(1.0).GEOGRAPHIE">
+                    <com:Name xml:lang="fr">Zones géographiques</com:Name>
+                    <com:Name xml:lang="en">Geographic areas</com:Name>
+                </str:Concept>
+                <str:Concept id="UNITE" urn="urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=FR1:CONCEPTS_INSEE(1.0).UNITE">
+                    <com:Name xml:lang="fr">Unité</com:Name>
+                    <com:Name xml:lang="en">Unit</com:Name>
+                </str:Concept>
+                <str:Concept id="CORRECTION" urn="urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=FR1:CONCEPTS_INSEE(1.0).CORRECTION">
+                    <com:Name xml:lang="fr">Correction saisonnière</com:Name>
+                    <com:Name xml:lang="en">Seasonal adjustment</com:Name>
+                </str:Concept>
+                <str:Concept id="UNIT_MULT" urn="urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=FR1:CONCEPTS_INSEE(1.0).UNIT_MULT">
+                    <com:Name xml:lang="fr">Puissance</com:Name>
+                    <com:Name xml:lang="en">Unit multiplier</com:Name>
+                </str:Concept>
+                <str:Concept id="BASE_PER" urn="urn:sdmx:org.sdmx.infomodel.conceptscheme.Concept=FR1:CONCEPTS_INSEE(1.0).BASE_PER">
+                    <com:Name xml:lang="fr">Base de l'indice</com:Name>
+                    <com:Name xml:lang="en">Base period</com:Name>
+                </str:Concept>
+            </str:ConceptScheme>
+        </str:Concepts>
+    </mes:Structures>
+</mes:Structure>

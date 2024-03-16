@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mes:Structure xmlns:mes="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/message"
+    xmlns:com="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/common"
+    xmlns:str="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/structure">
+    <mes:Header>
+        <mes:ID>datastructure_BALANCE-PAIEMENTS_1673601885475</mes:ID>
+        <mes:Test>false</mes:Test>
+        <mes:Prepared>2023-01-13T10:24:45.475+01:00</mes:Prepared>
+        <mes:Sender id="FR1">
+            <com:Name xml:lang="fr">Institut national de la statistique et des études économiques</com:Name>
+        </mes:Sender>
+        <mes:Receiver id="unknown"/>
+        <mes:Source xml:lang="fr">Banque de données macro-économiques</mes:Source>
+    </mes:Header>
+    <mes:Structures>
+        <str:Codelists>
+            <str:Codelist id="CL_PERIODICITE" urn="urn:sdmx:org.sdmx.infomodel.codelist.Codelist=FR1:CL_PERIODICITE(1.0)" agencyID="FR1" version="1.0">
+                <com:Name xml:lang="fr">Périodicité</com:Name>
+                <com:Name xml:lang="en">Frequency</com:Name>
+                <str:Code id="M" urn="urn:sdmx:org.sdmx.infomodel.codelist.Code=FR1:CL_PERIODICITE(1.0).M">
+                    <com:Name xml:lang="fr">Mensuelle</com:Name>
+                    <com:Name xml:lang="en">Monthly</com:Name>
+                </str:Code>
+            </str:Codelist>
+            <str:Codelist id="CL_BASIND" urn="urn:sdmx:org.sdmx.infomodel.codelist.Codelist=FR1:CL_BASIND(1.0)" agencyID="FR1" version="1.0">
+                <com:Name xml:lang="fr">Base de l'indice</com:Name>
+                <com:Name xml:lang="en">Base period</com:Name>
+                <str:Code id="SO" urn="urn:sdmx:org.sdmx.infomodel.codelist.Code=FR1:CL_BASIND(1.0).SO">
+                    <com:Name xml:lang="fr">Sans objet</com:Name>
+                    <com:Name xml:lang="en">Not applicable</com:Name>
+                </str:Code>
+            </str:Codelist>
+            <str:Codelist id="CL_COMPTE" urn="urn:sdmx:org.sdmx.infomodel.codelist.Codelist=FR1:CL_COMPTE(1.0)" agencyID="FR1" version="1.0">
+                <com:Name xml:lang="fr">Position de compte</com:Name>
+                <com:Name xml:lang="en">Account position</com:Name>
+                <str:Code id="CREDITS" urn="urn:sdmx:org.sdmx.infomodel.codelist.Code=FR1:CL_COMPTE(1.0).CREDITS">
+                    <com:Name xml:lang="fr">Crédits</com:Name>
+                    <com:Name xml:lang="en">Credits</com:Name>
+                </str:Code>
+            </str:Codelist>
+            <str:Codelist id="CL_CORRECTION" urn="urn:sdmx:org.sdmx.infomodel.codelist.Codelist=FR1:CL_CORRECTION(1.0)" agencyID="FR1" version="1.0">
+                <com:Name xml:lang="fr">Correction</com:Name>
+                <com:Name xml:lang="en">Correction</com:Name>
+                <str:Code id="BRUT" urn="urn:sdmx:org.sdmx.infomodel.codelist.Code=FR1:CL_CORRECTION(1.0).BRUT">
+                    <com:Name xml:lang="fr">Non corrigé</com:Name>
+                    <com:Name xml:lang="en">Uncorrected</com:Name>
+                </str:Code>
+                <str:Code id="CVS" urn="urn:sdmx:org.sdmx.infomodel.codelist.Code=FR1:CL_CORRECTION(1.0).CVS">
+                    <com:Name xml:lang="fr">Corrigé des variations saisonnières</com:Name>
+                    <com:Name xml:lang="en">Seasonal adjusted</com:Name>
+                </str:Code>
+            </str:Codelist>
+            <str:Codelist id="CL_INDICATEUR" urn="urn:sdmx:org.sdmx.infomodel.codelist.Codelist=FR1:CL_INDICATEUR(1.0)" agencyID="FR1" version="1.0">
+                <com:Name xml:lang="fr">Indicateur</com:Name>
+                <com:Name xml:lang="en">Indicator</com:Name>
+                <str:Code id="BALANCE_DES_PAIEMENTS" urn="urn:sdmx:org.sdmx.infomodel.codelist.Code=FR1:CL_INDICATEUR(1.0).BALANCE_DES_PAIEMENTS">
+                    <com:Name xml:lang="fr">Balance des paiements</com:Name>
+                    <com:Name xml:lang="en">Balance of Payments</com:Name>
+                </str:Code>
+            </str:Codelist>
+            <str:Codelist id="CL_INSTRUMENTS_BALANCE_PAIEMENTS" urn="urn:sdmx:org.sdmx.infomodel.codelist.Codelist=FR1:CL_INSTRUMENTS_BALANCE_PAIEMENTS(1.0)" agencyID="FR1" version="1.0">
+                <com:Name xml:lang="fr">Type de compte</com:Name>
+                <com:Name xml:lang="en">Account type</com:Name>
+                <str:Code id="181" urn="urn:sdmx:org.sdmx.infomodel.codelist.Code=FR1:CL_INSTRUMENTS_BALANCE_PAIEMENTS(1.0).181">
+                    <com:Name xml:lang="fr">Compte de transactions courantes - Revenus primaires - Revenus des investissements - Revenus des avoirs de réserve</com:Name>
+                    <com:Name xml:lang="en">Current account - Primary income - Investment income - Reserve assets</com:Name>
+                </str:Code>
+            </str:Codelist>
+            <str:Codelist id="CL_NATURE" urn="urn:sdmx:org.sdmx.infomodel.codelist.Codelist=FR1:CL_NATURE(1.0)" agencyID="FR1" version="1.0">
+                <com:Name xml:lang="fr">Nature</com:Name>
+                <com:Name xml:lang="en">Nature</com:Name>
+                <str:Code id="VALEUR_ABSOLUE" urn="urn:sdmx:org.sdmx.infomodel.codelist.Code=FR1:CL_NATURE(1.0).VALEUR_ABSOLUE">
+                    <com:Name xml:lang="fr">Valeur absolue</com:Name>
+                    <com:Name xml:lang="en">Absolute value</com:Name>
+                </str:Code>
+            </str:Codelist>
+            <str:Codelist id="CL_ZONE_GEO" urn="urn:sdmx:org.sdmx.infomodel.codelist.Codelist=FR1:CL_ZONE_GEO(1.0)" agencyID="FR1" version="1.0">
+                <com:Name xml:lang="fr">Zone géographique</com:Name>
+                <com:Name xml:lang="en">Reference area</com:Name>
+                <str:Code id="FE" urn="urn:sdmx:org.sdmx.infomodel.codelist.Code=FR1:CL_ZONE_GEO(1.0).FE">
+                    <com:Name xml:lang="fr">France</com:Name>
+                    <com:Name xml:lang="en">France</com:Name>
+                </str:Code>
+            </str:Codelist>
+            <str:Codelist id="CL_UNITE" urn="urn:sdmx:org.sdmx.infomodel.codelist.Codelist=FR1:CL_UNITE(1.0)" agencyID="FR1" version="1.0">
+                <com:Name xml:lang="fr">Unité</com:Name>
+                <com:Name xml:lang="en">Unit</com:Name>
+                <str:Code id="EUROS" urn="urn:sdmx:org.sdmx.infomodel.codelist.Code=FR1:CL_UNITE(1.0).EUROS">
+                    <com:Name xml:lang="fr">euros</com:Name>
+                    <com:Name xml:lang="en">euros</com:Name>
+                </str:Code>
+            </str:Codelist>
+            <str:Codelist id="CL_OBS_STATUS" urn="urn:sdmx:org.sdmx.infomodel.codelist.Codelist=FR1:CL_OBS_STATUS(1.0)" agencyID="FR1" version="1.0">
+                <com:Name xml:lang="fr">Statut des observations</com:Name>
+                <com:Name xml:lang="en">Observation status</com:Name>
+                <str:Code id="A" urn="urn:sdmx:org.sdmx.infomodel.codelist.Code=FR1:CL_OBS_STATUS(1.0).A">
+                    <com:Name xml:lang="fr">Valeur normale</com:Name>
+                    <com:Name xml:lang="en">Normal value</com:Name>
+                </str:Code>
+            </str:Codelist>
+            <str:Codelist id="CL_OBS_QUAL" urn="urn:sdmx:org.sdmx.infomodel.codelist.Codelist=FR1:CL_OBS_QUAL(1.0)" agencyID="FR1" version="1.0">
+                <com:Name xml:lang="fr">Qualité de l'observation</com:Name>
+                <com:Name xml:lang="en">Observation quality</com:Name>
+                <str:Code id="DEF" urn="urn:sdmx:org.sdmx.infomodel.codelist.Code=FR1:CL_OBS_QUAL(1.0).DEF">
+                    <com:Name xml:lang="fr">Valeur définitive</com:Name>
+                    <com:Name xml:lang="en">Final value</com:Name>
+                </str:Code>
+            </str:Codelist>
+            <str:Codelist id="CL_OBS_REV" urn="urn:sdmx:org.sdmx.infomodel.codelist.Codelist=FR1:CL_OBS_REV(1.0)" agencyID="FR1" version="1.0">
+                <com:Name xml:lang="fr">Caractère de révision</com:Name>
+                <com:Name xml:lang="en">Observation revised</com:Name>
+                <str:Code id="1" urn="urn:sdmx:org.sdmx.infomodel.codelist.Code=FR1:CL_OBS_REV(1.0).1">
+                    <com:Name xml:lang="fr">Révision</com:Name>
+                    <com:Name xml:lang="en">Revised value</com:Name>
+                </str:Code>
+            </str:Codelist>
+            <str:Codelist id="CL_OBS_CONF" urn="urn:sdmx:org.sdmx.infomodel.codelist.Codelist=FR1:CL_OBS_CONF(1.0)" agencyID="FR1" version="1.0">
+                <com:Name xml:lang="fr">Confidentialité de l'observation</com:Name>
+                <com:Name xml:lang="en">Observation confidentiality</com:Name>
+                <str:Code id="F" urn="urn:sdmx:org.sdmx.infomodel.codelist.Code=FR1:CL_OBS_CONF(1.0).F">
+                    <com:Name xml:lang="fr">Valeur publique</com:Name>
+                    <com:Name xml:lang="en">Free</com:Name>
+                </str:Code>
+            </str:Codelist>
+            <str:Codelist id="CL_OBS_TYPE" urn="urn:sdmx:org.sdmx.infomodel.codelist.Codelist=FR1:CL_OBS_TYPE(1.0)" agencyID="FR1" version="1.0">
+                <com:Name xml:lang="fr">Type d'observation</com:Name>
+                <com:Name xml:lang="en">Observation type</com:Name>
+                <str:Code id="A" urn="urn:sdmx:org.sdmx.infomodel.codelist.Code=FR1:CL_OBS_TYPE(1.0).A">
+                    <com:Name xml:lang="fr">Valeur normale</com:Name>
+                    <com:Name xml:lang="en">Normal value</com:Name>
+                </str:Code>
+            </str:Codelist>
+        </str:Codelists>
+    </mes:Structures>
+</mes:Structure>

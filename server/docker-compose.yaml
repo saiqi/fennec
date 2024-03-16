@@ -1,0 +1,16 @@
+---
+version: '3.7'
+
+services:
+  db:
+    image: postgres:15
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "fennec_api"]
+      interval: 5s
+      retries: 5
+    environment:
+      POSTGRES_USER: fennec_api
+      POSTGRES_PASSWORD: fennec_api
+      POSTGRES_DB: fennec_api

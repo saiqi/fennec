@@ -1,0 +1,588 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mes:Structure xmlns:mes="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/message"
+  xmlns:com="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/common"
+  xmlns:str="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/structure">
+  <mes:Header>
+    <mes:ID>datastructure_BALANCE-PAIEMENTS_1673603690421</mes:ID>
+    <mes:Test>false</mes:Test>
+    <mes:Prepared>2023-01-13T10:54:50.421+01:00</mes:Prepared>
+    <mes:Sender id="FR1">
+      <com:Name xml:lang="fr">Institut national de la statistique et des études économiques</com:Name>
+    </mes:Sender>
+    <mes:Receiver id="unknown"/>
+    <mes:Source xml:lang="fr">Banque de données macro-économiques</mes:Source>
+  </mes:Header>
+  <mes:Structures>
+    <str:DataStructures>
+      <str:DataStructure id="BALANCE-PAIEMENTS" urn="urn:sdmx:org.sdmx.infomodel.datastructure.DataStructure=FR1:BALANCE-PAIEMENTS(1.0)" agencyID="FR1" version="1.0">
+        <com:Name xml:lang="fr">Balance des paiements</com:Name>
+        <com:Name xml:lang="en">Balance of payments</com:Name>
+        <str:DataStructureComponents>
+          <str:DimensionList id="DimensionDescriptor" urn="urn:sdmx:org.sdmx.infomodel.datastructure.DimensionDescriptor=FR1:BALANCE-PAIEMENTS(1.0).DimensionDescriptor">
+            <str:TimeDimension id="TIME_PERIOD" urn="urn:sdmx:org.sdmx.infomodel.datastructure.TimeDimension=FR1:BALANCE-PAIEMENTS(1.0).TIME_PERIOD" position="1">
+              <str:ConceptIdentity>
+                <Ref id="TIME_PERIOD" maintainableParentID="CONCEPTS_INSEE" maintainableParentVersion="1.0" agencyID="FR1" package="conceptscheme" class="Concept"/>
+              </str:ConceptIdentity>
+              <str:LocalRepresentation>
+                <str:TextFormat textType="ObservationalTimePeriod"/>
+              </str:LocalRepresentation>
+            </str:TimeDimension>
+            <str:Dimension id="FREQ" urn="urn:sdmx:org.sdmx.infomodel.datastructure.Dimension=FR1:BALANCE-PAIEMENTS(1.0).FREQ" position="2">
+              <str:ConceptIdentity>
+                <Ref id="FREQ" maintainableParentID="CONCEPTS_INSEE" maintainableParentVersion="1.0" agencyID="FR1" package="conceptscheme" class="Concept"/>
+              </str:ConceptIdentity>
+              <str:LocalRepresentation>
+                <str:Enumeration>
+                  <Ref id="CL_PERIODICITE" version="1.0" agencyID="FR1" package="codelist" class="Codelist"/>
+                </str:Enumeration>
+              </str:LocalRepresentation>
+            </str:Dimension>
+            <str:Dimension id="INDICATEUR" urn="urn:sdmx:org.sdmx.infomodel.datastructure.Dimension=FR1:BALANCE-PAIEMENTS(1.0).INDICATEUR" position="3">
+              <str:ConceptIdentity>
+                <Ref id="INDICATEUR" maintainableParentID="CONCEPTS_INSEE" maintainableParentVersion="1.0" agencyID="FR1" package="conceptscheme" class="Concept"/>
+              </str:ConceptIdentity>
+              <str:LocalRepresentation>
+                <str:Enumeration>
+                  <Ref id="CL_INDICATEUR" version="1.0" agencyID="FR1" package="codelist" class="Codelist"/>
+                </str:Enumeration>
+              </str:LocalRepresentation>
+            </str:Dimension>
+            <str:Dimension id="COMPTE" urn="urn:sdmx:org.sdmx.infomodel.datastructure.Dimension=FR1:BALANCE-PAIEMENTS(1.0).COMPTE" position="4">
+              <str:ConceptIdentity>
+                <Ref id="COMPTE" maintainableParentID="CONCEPTS_INSEE" maintainableParentVersion="1.0" agencyID="FR1" package="conceptscheme" class="Concept"/>
+              </str:ConceptIdentity>
+              <str:LocalRepresentation>
+                <str:Enumeration>
+                  <Ref id="CL_COMPTE" version="1.0" agencyID="FR1" package="codelist" class="Codelist"/>
+                </str:Enumeration>
+              </str:LocalRepresentation>
+            </str:Dimension>
+            <str:Dimension id="INSTRUMENTS_BALANCE_PAIEMENTS" urn="urn:sdmx:org.sdmx.infomodel.datastructure.Dimension=FR1:BALANCE-PAIEMENTS(1.0).INSTRUMENTS_BALANCE_PAIEMENTS" position="5">
+              <str:ConceptIdentity>
+                <Ref id="INSTRUMENT" maintainableParentID="CONCEPTS_INSEE" maintainableParentVersion="1.0" agencyID="FR1" package="conceptscheme" class="Concept"/>
+              </str:ConceptIdentity>
+              <str:LocalRepresentation>
+                <str:Enumeration>
+                  <Ref id="CL_INSTRUMENTS_BALANCE_PAIEMENTS" version="1.0" agencyID="FR1" package="codelist" class="Codelist"/>
+                </str:Enumeration>
+              </str:LocalRepresentation>
+            </str:Dimension>
+            <str:Dimension id="NATURE" urn="urn:sdmx:org.sdmx.infomodel.datastructure.Dimension=FR1:BALANCE-PAIEMENTS(1.0).NATURE" position="6">
+              <str:ConceptIdentity>
+                <Ref id="NATURE" maintainableParentID="CONCEPTS_INSEE" maintainableParentVersion="1.0" agencyID="FR1" package="conceptscheme" class="Concept"/>
+              </str:ConceptIdentity>
+              <str:LocalRepresentation>
+                <str:Enumeration>
+                  <Ref id="CL_NATURE" version="1.0" agencyID="FR1" package="codelist" class="Codelist"/>
+                </str:Enumeration>
+              </str:LocalRepresentation>
+            </str:Dimension>
+            <str:Dimension id="REF_AREA" urn="urn:sdmx:org.sdmx.infomodel.datastructure.Dimension=FR1:BALANCE-PAIEMENTS(1.0).REF_AREA" position="7">
+              <str:ConceptIdentity>
+                <Ref id="GEOGRAPHIE" maintainableParentID="CONCEPTS_INSEE" maintainableParentVersion="1.0" agencyID="FR1" package="conceptscheme" class="Concept"/>
+              </str:ConceptIdentity>
+              <str:LocalRepresentation>
+                <str:Enumeration>
+                  <Ref id="CL_ZONE_GEO" version="1.0" agencyID="FR1" package="codelist" class="Codelist"/>
+                </str:Enumeration>
+              </str:LocalRepresentation>
+            </str:Dimension>
+            <str:Dimension id="UNIT_MEASURE" urn="urn:sdmx:org.sdmx.infomodel.datastructure.Dimension=FR1:BALANCE-PAIEMENTS(1.0).UNIT_MEASURE" position="8">
+              <str:ConceptIdentity>
+                <Ref id="UNITE" maintainableParentID="CONCEPTS_INSEE" maintainableParentVersion="1.0" agencyID="FR1" package="conceptscheme" class="Concept"/>
+              </str:ConceptIdentity>
+              <str:LocalRepresentation>
+                <str:Enumeration>
+                  <Ref id="CL_UNITE" version="1.0" agencyID="FR1" package="codelist" class="Codelist"/>
+                </str:Enumeration>
+              </str:LocalRepresentation>
+            </str:Dimension>
+            <str:Dimension id="CORRECTION" urn="urn:sdmx:org.sdmx.infomodel.datastructure.Dimension=FR1:BALANCE-PAIEMENTS(1.0).CORRECTION" position="9">
+              <str:ConceptIdentity>
+                <Ref id="CORRECTION" maintainableParentID="CONCEPTS_INSEE" maintainableParentVersion="1.0" agencyID="FR1" package="conceptscheme" class="Concept"/>
+              </str:ConceptIdentity>
+              <str:LocalRepresentation>
+                <str:Enumeration>
+                  <Ref id="CL_CORRECTION" version="1.0" agencyID="FR1" package="codelist" class="Codelist"/>
+                </str:Enumeration>
+              </str:LocalRepresentation>
+            </str:Dimension>
+            <str:Dimension id="BASIND" urn="urn:sdmx:org.sdmx.infomodel.datastructure.Dimension=FR1:BALANCE-PAIEMENTS(1.0).BASIND" position="10">
+              <str:ConceptIdentity>
+                <Ref id="BASE_PER" maintainableParentID="CONCEPTS_INSEE" maintainableParentVersion="1.0" agencyID="FR1" package="conceptscheme" class="Concept"/>
+              </str:ConceptIdentity>
+              <str:LocalRepresentation>
+                <str:Enumeration>
+                  <Ref id="CL_BASIND" version="1.0" agencyID="FR1" package="codelist" class="Codelist"/>
+                </str:Enumeration>
+              </str:LocalRepresentation>
+            </str:Dimension>
+          </str:DimensionList>
+          <str:AttributeList id="AttributeDescriptor" urn="urn:sdmx:org.sdmx.infomodel.datastructure.AttributeDescriptor=FR1:BALANCE-PAIEMENTS(1.0).AttributeDescriptor">
+            <str:Attribute id="UNIT_MULT" urn="urn:sdmx:org.sdmx.infomodel.datastructure.DataAttribute=FR1:BALANCE-PAIEMENTS(1.0).UNIT_MULT" assignmentStatus="Mandatory">
+              <str:ConceptIdentity>
+                <Ref id="UNIT_MULT" maintainableParentID="CONCEPTS_INSEE" maintainableParentVersion="1.0" agencyID="FR1" package="conceptscheme" class="Concept"/>
+              </str:ConceptIdentity>
+              <str:LocalRepresentation>
+                <str:TextFormat textType="Integer" minValue="0" maxValue="9"/>
+              </str:LocalRepresentation>
+              <str:AttributeRelationship>
+                <str:Dimension>
+                  <Ref id="FREQ"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="INDICATEUR"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="COMPTE"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="INSTRUMENTS_BALANCE_PAIEMENTS"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="NATURE"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="REF_AREA"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="UNIT_MEASURE"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="CORRECTION"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="BASIND"/>
+                </str:Dimension>
+              </str:AttributeRelationship>
+            </str:Attribute>
+            <str:Attribute id="IDBANK" urn="urn:sdmx:org.sdmx.infomodel.datastructure.DataAttribute=FR1:BALANCE-PAIEMENTS(1.0).IDBANK" assignmentStatus="Mandatory">
+              <str:ConceptIdentity>
+                <Ref id="IDBANK" maintainableParentID="CONCEPTS_INSEE" maintainableParentVersion="1.0" agencyID="FR1" package="conceptscheme" class="Concept"/>
+              </str:ConceptIdentity>
+              <str:LocalRepresentation>
+                <str:TextFormat textType="String" maxLength="9" pattern="[0-9]{9}"/>
+              </str:LocalRepresentation>
+              <str:AttributeRelationship>
+                <str:Dimension>
+                  <Ref id="FREQ"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="INDICATEUR"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="COMPTE"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="INSTRUMENTS_BALANCE_PAIEMENTS"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="NATURE"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="REF_AREA"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="UNIT_MEASURE"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="CORRECTION"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="BASIND"/>
+                </str:Dimension>
+              </str:AttributeRelationship>
+            </str:Attribute>
+            <str:Attribute id="TITLE_FR" urn="urn:sdmx:org.sdmx.infomodel.datastructure.DataAttribute=FR1:BALANCE-PAIEMENTS(1.0).TITLE_FR" assignmentStatus="Mandatory">
+              <str:ConceptIdentity>
+                <Ref id="TITLE_FR" maintainableParentID="CONCEPTS_INSEE" maintainableParentVersion="1.0" agencyID="FR1" package="conceptscheme" class="Concept"/>
+              </str:ConceptIdentity>
+              <str:LocalRepresentation>
+                <str:TextFormat textType="String" maxLength="240"/>
+              </str:LocalRepresentation>
+              <str:AttributeRelationship>
+                <str:Dimension>
+                  <Ref id="FREQ"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="INDICATEUR"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="COMPTE"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="INSTRUMENTS_BALANCE_PAIEMENTS"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="NATURE"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="REF_AREA"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="UNIT_MEASURE"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="CORRECTION"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="BASIND"/>
+                </str:Dimension>
+              </str:AttributeRelationship>
+            </str:Attribute>
+            <str:Attribute id="TITLE_EN" urn="urn:sdmx:org.sdmx.infomodel.datastructure.DataAttribute=FR1:BALANCE-PAIEMENTS(1.0).TITLE_EN" assignmentStatus="Mandatory">
+              <str:ConceptIdentity>
+                <Ref id="TITLE_EN" maintainableParentID="CONCEPTS_INSEE" maintainableParentVersion="1.0" agencyID="FR1" package="conceptscheme" class="Concept"/>
+              </str:ConceptIdentity>
+              <str:LocalRepresentation>
+                <str:TextFormat textType="String" maxLength="240"/>
+              </str:LocalRepresentation>
+              <str:AttributeRelationship>
+                <str:Dimension>
+                  <Ref id="FREQ"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="INDICATEUR"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="COMPTE"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="INSTRUMENTS_BALANCE_PAIEMENTS"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="NATURE"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="REF_AREA"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="UNIT_MEASURE"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="CORRECTION"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="BASIND"/>
+                </str:Dimension>
+              </str:AttributeRelationship>
+            </str:Attribute>
+            <str:Attribute id="LAST_UPDATE" urn="urn:sdmx:org.sdmx.infomodel.datastructure.DataAttribute=FR1:BALANCE-PAIEMENTS(1.0).LAST_UPDATE" assignmentStatus="Mandatory">
+              <str:ConceptIdentity>
+                <Ref id="LAST_UPDATE" maintainableParentID="CONCEPTS_INSEE" maintainableParentVersion="1.0" agencyID="FR1" package="conceptscheme" class="Concept"/>
+              </str:ConceptIdentity>
+              <str:LocalRepresentation>
+                <str:TextFormat textType="GregorianTimePeriod"/>
+              </str:LocalRepresentation>
+              <str:AttributeRelationship>
+                <str:Dimension>
+                  <Ref id="FREQ"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="INDICATEUR"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="COMPTE"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="INSTRUMENTS_BALANCE_PAIEMENTS"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="NATURE"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="REF_AREA"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="UNIT_MEASURE"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="CORRECTION"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="BASIND"/>
+                </str:Dimension>
+              </str:AttributeRelationship>
+            </str:Attribute>
+            <str:Attribute id="DECIMALS" urn="urn:sdmx:org.sdmx.infomodel.datastructure.DataAttribute=FR1:BALANCE-PAIEMENTS(1.0).DECIMALS" assignmentStatus="Mandatory">
+              <str:ConceptIdentity>
+                <Ref id="DECIMALS" maintainableParentID="CONCEPTS_INSEE" maintainableParentVersion="1.0" agencyID="FR1" package="conceptscheme" class="Concept"/>
+              </str:ConceptIdentity>
+              <str:LocalRepresentation>
+                <str:TextFormat textType="Integer" minValue="0" maxValue="9"/>
+              </str:LocalRepresentation>
+              <str:AttributeRelationship>
+                <str:Dimension>
+                  <Ref id="FREQ"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="INDICATEUR"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="COMPTE"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="INSTRUMENTS_BALANCE_PAIEMENTS"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="NATURE"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="REF_AREA"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="UNIT_MEASURE"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="CORRECTION"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="BASIND"/>
+                </str:Dimension>
+              </str:AttributeRelationship>
+            </str:Attribute>
+            <str:Attribute id="OBS_STATUS" urn="urn:sdmx:org.sdmx.infomodel.datastructure.DataAttribute=FR1:BALANCE-PAIEMENTS(1.0).OBS_STATUS" assignmentStatus="Mandatory">
+              <str:ConceptIdentity>
+                <Ref id="OBS_STATUS" maintainableParentID="CONCEPTS_INSEE" maintainableParentVersion="1.0" agencyID="FR1" package="conceptscheme" class="Concept"/>
+              </str:ConceptIdentity>
+              <str:LocalRepresentation>
+                <str:Enumeration>
+                  <Ref id="CL_OBS_STATUS" version="1.0" agencyID="FR1" package="codelist" class="Codelist"/>
+                </str:Enumeration>
+              </str:LocalRepresentation>
+              <str:AttributeRelationship>
+                <str:Dimension>
+                  <Ref id="FREQ"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="INDICATEUR"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="COMPTE"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="INSTRUMENTS_BALANCE_PAIEMENTS"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="NATURE"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="REF_AREA"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="UNIT_MEASURE"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="CORRECTION"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="BASIND"/>
+                </str:Dimension>
+              </str:AttributeRelationship>
+            </str:Attribute>
+            <str:Attribute id="OBS_QUAL" urn="urn:sdmx:org.sdmx.infomodel.datastructure.DataAttribute=FR1:BALANCE-PAIEMENTS(1.0).OBS_QUAL" assignmentStatus="Conditional">
+              <str:ConceptIdentity>
+                <Ref id="OBS_QUAL" maintainableParentID="CONCEPTS_INSEE" maintainableParentVersion="1.0" agencyID="FR1" package="conceptscheme" class="Concept"/>
+              </str:ConceptIdentity>
+              <str:LocalRepresentation>
+                <str:Enumeration>
+                  <Ref id="CL_OBS_QUAL" version="1.0" agencyID="FR1" package="codelist" class="Codelist"/>
+                </str:Enumeration>
+              </str:LocalRepresentation>
+              <str:AttributeRelationship>
+                <str:Dimension>
+                  <Ref id="FREQ"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="INDICATEUR"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="COMPTE"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="INSTRUMENTS_BALANCE_PAIEMENTS"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="NATURE"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="REF_AREA"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="UNIT_MEASURE"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="CORRECTION"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="BASIND"/>
+                </str:Dimension>
+              </str:AttributeRelationship>
+            </str:Attribute>
+            <str:Attribute id="OBS_REV" urn="urn:sdmx:org.sdmx.infomodel.datastructure.DataAttribute=FR1:BALANCE-PAIEMENTS(1.0).OBS_REV" assignmentStatus="Conditional">
+              <str:ConceptIdentity>
+                <Ref id="OBS_REV" maintainableParentID="CONCEPTS_INSEE" maintainableParentVersion="1.0" agencyID="FR1" package="conceptscheme" class="Concept"/>
+              </str:ConceptIdentity>
+              <str:LocalRepresentation>
+                <str:Enumeration>
+                  <Ref id="CL_OBS_REV" version="1.0" agencyID="FR1" package="codelist" class="Codelist"/>
+                </str:Enumeration>
+              </str:LocalRepresentation>
+              <str:AttributeRelationship>
+                <str:Dimension>
+                  <Ref id="FREQ"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="INDICATEUR"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="COMPTE"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="INSTRUMENTS_BALANCE_PAIEMENTS"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="NATURE"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="REF_AREA"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="UNIT_MEASURE"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="CORRECTION"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="BASIND"/>
+                </str:Dimension>
+              </str:AttributeRelationship>
+            </str:Attribute>
+            <str:Attribute id="OBS_CONF" urn="urn:sdmx:org.sdmx.infomodel.datastructure.DataAttribute=FR1:BALANCE-PAIEMENTS(1.0).OBS_CONF" assignmentStatus="Conditional">
+              <str:ConceptIdentity>
+                <Ref id="OBS_CONF" maintainableParentID="CONCEPTS_INSEE" maintainableParentVersion="1.0" agencyID="FR1" package="conceptscheme" class="Concept"/>
+              </str:ConceptIdentity>
+              <str:LocalRepresentation>
+                <str:Enumeration>
+                  <Ref id="CL_OBS_CONF" version="1.0" agencyID="FR1" package="codelist" class="Codelist"/>
+                </str:Enumeration>
+              </str:LocalRepresentation>
+              <str:AttributeRelationship>
+                <str:Dimension>
+                  <Ref id="FREQ"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="INDICATEUR"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="COMPTE"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="INSTRUMENTS_BALANCE_PAIEMENTS"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="NATURE"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="REF_AREA"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="UNIT_MEASURE"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="CORRECTION"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="BASIND"/>
+                </str:Dimension>
+              </str:AttributeRelationship>
+            </str:Attribute>
+            <str:Attribute id="OBS_TYPE" urn="urn:sdmx:org.sdmx.infomodel.datastructure.DataAttribute=FR1:BALANCE-PAIEMENTS(1.0).OBS_TYPE" assignmentStatus="Conditional">
+              <str:ConceptIdentity>
+                <Ref id="OBS_TYPE" maintainableParentID="CONCEPTS_INSEE" maintainableParentVersion="1.0" agencyID="FR1" package="conceptscheme" class="Concept"/>
+              </str:ConceptIdentity>
+              <str:LocalRepresentation>
+                <str:Enumeration>
+                  <Ref id="CL_OBS_TYPE" version="1.0" agencyID="FR1" package="codelist" class="Codelist"/>
+                </str:Enumeration>
+              </str:LocalRepresentation>
+              <str:AttributeRelationship>
+                <str:Dimension>
+                  <Ref id="FREQ"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="INDICATEUR"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="COMPTE"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="INSTRUMENTS_BALANCE_PAIEMENTS"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="NATURE"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="REF_AREA"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="UNIT_MEASURE"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="CORRECTION"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="BASIND"/>
+                </str:Dimension>
+              </str:AttributeRelationship>
+            </str:Attribute>
+            <str:Attribute id="DATE_JO" urn="urn:sdmx:org.sdmx.infomodel.datastructure.DataAttribute=FR1:BALANCE-PAIEMENTS(1.0).DATE_JO" assignmentStatus="Conditional">
+              <str:ConceptIdentity>
+                <Ref id="DATE_JO" maintainableParentID="CONCEPTS_INSEE" maintainableParentVersion="1.0" agencyID="FR1" package="conceptscheme" class="Concept"/>
+              </str:ConceptIdentity>
+              <str:LocalRepresentation>
+                <str:TextFormat textType="GregorianTimePeriod"/>
+              </str:LocalRepresentation>
+              <str:AttributeRelationship>
+                <str:Dimension>
+                  <Ref id="FREQ"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="INDICATEUR"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="COMPTE"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="INSTRUMENTS_BALANCE_PAIEMENTS"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="NATURE"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="REF_AREA"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="UNIT_MEASURE"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="CORRECTION"/>
+                </str:Dimension>
+                <str:Dimension>
+                  <Ref id="BASIND"/>
+                </str:Dimension>
+              </str:AttributeRelationship>
+            </str:Attribute>
+          </str:AttributeList>
+          <str:MeasureList id="MeasureDescriptor" urn="urn:sdmx:org.sdmx.infomodel.datastructure.MeasureDescriptor=FR1:BALANCE-PAIEMENTS(1.0).MeasureDescriptor">
+            <str:PrimaryMeasure id="OBS_VALUE" urn="urn:sdmx:org.sdmx.infomodel.datastructure.PrimaryMeasure=FR1:BALANCE-PAIEMENTS(1.0).OBS_VALUE">
+              <str:ConceptIdentity>
+                <Ref id="OBS_VALUE" maintainableParentID="CONCEPTS_INSEE" maintainableParentVersion="1.0" agencyID="FR1" package="conceptscheme" class="Concept"/>
+              </str:ConceptIdentity>
+            </str:PrimaryMeasure>
+          </str:MeasureList>
+        </str:DataStructureComponents>
+      </str:DataStructure>
+    </str:DataStructures>
+  </mes:Structures>
+</mes:Structure>

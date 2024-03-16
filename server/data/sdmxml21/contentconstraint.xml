@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<mes:Structure xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xml="http://www.w3.org/XML/1998/namespace"
+    xmlns:mes="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/message"
+    xmlns:str="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/structure"
+    xmlns:com="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/common" xsi:schemaLocation="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/message https://registry.sdmx.org/schemas/v2_1/SDMXMessage.xsd">
+    <mes:Header>
+        <mes:ID>IREF476530</mes:ID>
+        <mes:Test>false</mes:Test>
+        <mes:Prepared>2023-02-22T06:34:11Z</mes:Prepared>
+        <mes:Sender id="Unknown"/>
+        <mes:Receiver id="not_supplied"/>
+    </mes:Header>
+    <mes:Structures>
+        <str:Constraints>
+            <str:ContentConstraint urn="urn:sdmx:org.sdmx.infomodel.registry.ContentConstraint=ECB:AME_CONSTRAINTS(1.0)" isExternalReference="false" agencyID="ECB" id="AME_CONSTRAINTS" isFinal="false" type="Allowed" version="1.0">
+                <com:Name xml:lang="en">Constraints for the AME dataflow.</com:Name>
+                <str:ConstraintAttachment>
+                    <str:Dataflow>
+                        <Ref package="datastructure" agencyID="ECB" id="AME" version="1.0" class="Dataflow"/>
+                    </str:Dataflow>
+                </str:ConstraintAttachment>
+                <str:CubeRegion include="true">
+                    <com:KeyValue id="AME_ITEM">
+                        <com:Value>UDGGL</com:Value>
+                    </com:KeyValue>
+                    <com:KeyValue id="AME_REFERENCE">
+                        <com:Value>0</com:Value>
+                    </com:KeyValue>
+                    <com:KeyValue id="AME_REF_AREA">
+                        <com:Value>DNK</com:Value>
+                        <com:Value>IRL</com:Value>
+                    </com:KeyValue>
+                    <com:KeyValue id="AME_TRANSFORMATION">
+                        <com:Value>1</com:Value>
+                    </com:KeyValue>
+                    <com:KeyValue id="AME_UNIT">
+                        <com:Value>0</com:Value>
+                        <com:Value>319</com:Value>
+                    </com:KeyValue>
+                    <com:KeyValue id="AME_AGG_METHOD">
+                        <com:Value>0</com:Value>
+                    </com:KeyValue>
+                    <com:KeyValue id="FREQ">
+                        <com:Value>A</com:Value>
+                    </com:KeyValue>
+                </str:CubeRegion>
+            </str:ContentConstraint>
+        </str:Constraints>
+    </mes:Structures>
+</mes:Structure>

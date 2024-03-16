@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Structure xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/message" xsi:schemaLocation="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/structure https://registry.sdmx.org/schemas/v2_0/SDMXStructure.xsd http://www.SDMX.org/resources/SDMXML/schemas/v2_0/message https://registry.sdmx.org/schemas/v2_0/SDMXMessage.xsd">
+    <Header>
+        <ID>a734b570-0fc9-47e4-95ca-031ece4f16b4</ID>
+        <Test>false</Test>
+        <Prepared>2023-01-27T11:40:33</Prepared>
+        <Sender id="1C0">
+            <Name xml:lang="en">IMF</Name>
+            <Contact>
+                <URI>http://www.imf.org</URI>
+                <Telephone>+ 1 (202) 623-6220</Telephone>
+            </Contact>
+        </Sender>
+        <Receiver id="ZZZ" />
+    </Header>
+    <Dataflows>
+        <Dataflow id="DS-BOP_2017M06" version="1.0" agencyID="IMF" isFinal="true"
+            xmlns="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/structure">
+            <Name xml:lang="en">Balance of Payments (BOP), 2017 M06</Name>
+            <KeyFamilyRef>
+                <KeyFamilyID>BOP_2017M06</KeyFamilyID>
+                <KeyFamilyAgencyID>IMF</KeyFamilyAgencyID>
+            </KeyFamilyRef>
+        </Dataflow>
+        <Dataflow id="DS-BOP_2020M3" version="1.0" agencyID="IMF" isFinal="true"
+            xmlns="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/structure">
+            <Name xml:lang="en">Balance of Payments (BOP), 2020 M03</Name>
+            <KeyFamilyRef>
+                <KeyFamilyID>BOP_2020M3</KeyFamilyID>
+                <KeyFamilyAgencyID>IMF</KeyFamilyAgencyID>
+            </KeyFamilyRef>
+        </Dataflow>
+    </Dataflows>
+</Structure>
