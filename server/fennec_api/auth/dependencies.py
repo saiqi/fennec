@@ -10,7 +10,7 @@ from fennec_api.users.models import User
 from fennec_api.users.schemas import Role
 import fennec_api.users.service as user_service
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_PREFIX}/auth/token")
 
 credentials_exception = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
