@@ -1,0 +1,52 @@
+name: CI
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
+
+jobs:
+    ci-backend:
+        runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: ./server
+        services:
+            postgres:
+                image: postgres:15
+                env:
+                    POSTGRES_PASSWORD: fennec_api
+                    POSTGRES_USER: fennec_api
+                    POSTGRES_DB: fennec_api
+                options: >-
+                    --health-cmd pg_isready
+                    --health-interval 10s
+                    --health-timeout 5s
+                    --health-retries 5
+                ports:
+                    - 5432:5432
+        steps:
+            - name: Check out repository code
+              uses: actions/checkout@v4
+            - name: Setup Python
+              uses: actions/setup-python@v4
+              with:
+                python-version: "3.12"
+            - name: Setup poetry
+              uses: abatilo/actions-poetry@v2
+              with:
+                poetry-version: "1.7.1"
+            - name: Install dependencies
+              run: poetry install --with dev
+            - name: Run linter
+              run: poetry run ruff check .
+            - name: Run typechecker
+              run: poetry run mypy --strict --no-incremental .
+            - name: Run tests
+              run: poetry run pytest -v
+              env:
+                ENVIRONMENT: test
+                DB_URI: postgresql+asyncpg://fennec_api:fennec_api@localhost:5432/fennec_api
+                SECRET_KEY: supersecret
