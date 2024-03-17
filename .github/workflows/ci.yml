@@ -42,7 +42,7 @@ jobs:
             - name: Run typechecker
               run: poetry run mypy --strict --no-incremental .
             - name: Run tests
-              run: poetry run pytest -v --cov fennec_api
+              run: poetry run pytest -v --cov=./fennec_api --cov-report=xml
               env:
                 ENVIRONMENT: test
                 DB_URI: postgresql+asyncpg://fennec_api:fennec_api@localhost:5432/fennec_api
