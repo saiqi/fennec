@@ -42,8 +42,13 @@ jobs:
             - name: Run typechecker
               run: poetry run mypy --strict --no-incremental .
             - name: Run tests
-              run: poetry run pytest -v
+              run: poetry run pytest -v --cov=./fennec_api --cov-report=xml
               env:
                 ENVIRONMENT: test
                 DB_URI: postgresql+asyncpg://fennec_api:fennec_api@localhost:5432/fennec_api
                 SECRET_KEY: supersecret
+            - name: Upload coverage reports to Codecov
+              uses: codecov/codecov-action@v4
+              with:
+                token: ${{ secrets.CODECOV_TOKEN }}
+                slug: saiqi/fennec
