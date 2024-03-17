@@ -10,7 +10,7 @@ import fennec_api.auth.service as auth_service
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
-@router.post("/token")
+@router.post("/token", status_code=status.HTTP_201_CREATED)
 async def login_for_access_token(
     session: Annotated[AsyncSession, Depends(get_session)],
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
