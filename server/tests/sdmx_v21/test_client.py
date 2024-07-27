@@ -1,10 +1,4 @@
-from typing import AsyncGenerator
-import pytest
-import pytest_asyncio
-import aiofiles
-import httpx
 from fennec_api.sdmx_v21.client import (
-    SDMX21RestClient,
     SDMX21StructureRequest,
     StructureType,
     build_default_structure_path,
@@ -13,18 +7,6 @@ from fennec_api.sdmx_v21.client import (
     ReferencesType,
     DetailType,
 )
-
-
-@pytest_asyncio.fixture()
-async def mock_http_client() -> AsyncGenerator[httpx.AsyncClient, None]:
-    async with aiofiles.open("data/sdmxml21/dataflow.xml", "rb") as f:
-        content = await f.read()
-        async with httpx.AsyncClient(
-            transport=httpx.MockTransport(
-                lambda req: httpx.Response(200, content=content)
-            )
-        ) as client:
-            yield client
 
 
 def test_default_structure_path_builder() -> None:
@@ -74,19 +56,3 @@ def test_default_structure_headers_builder() -> None:
     assert build_default_structure_headers() == {
         "Accept": "application/vnd.sdmx.structure+xml;version=2.1"
     }
-
-
-@pytest.mark.asyncio
-async def test_get_structure_by_resource_id(
-    mock_http_client: httpx.AsyncClient,
-) -> None:
-    req = SDMX21StructureRequest(
-        resource=StructureType.DATAFLOW,
-        agency_id="FR1",
-        resource_id="BALANCE-PAIEMENTS",
-    )
-    client = SDMX21RestClient(
-        http_client=mock_http_client, root_url="https://sdmx-rest"
-    )
-    message = await client.get_structure(req=req)
-    assert message

@@ -1,4 +1,4 @@
-from typing import Protocol, Callable
+from typing import Callable
 from dataclasses import dataclass
 from enum import Enum
 from urllib.parse import urljoin
@@ -46,16 +46,6 @@ class SDMX21StructureRequest:
     item_id: str | None = None
 
 
-class ISDMX21RestClient(Protocol):
-    async def get_structure(
-        self,
-        *,
-        req: SDMX21StructureRequest,
-        detail: DetailType | None = None,
-        references: ReferencesType | None = None,
-    ) -> bytes: ...
-
-
 def build_default_structure_path(req: SDMX21StructureRequest) -> str:
     path_elems = [req.resource.value]
     if req.agency_id:
@@ -84,7 +74,7 @@ def build_default_structure_headers() -> dict[str, str]:
     return {"Accept": STRUCTURE_CONTENT_TYPE}
 
 
-class SDMX21RestClient(ISDMX21RestClient):
+class SDMX21RestClient:
     def __init__(
         self,
         http_client: AsyncClient,
