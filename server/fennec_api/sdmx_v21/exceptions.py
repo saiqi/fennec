@@ -1,0 +1,2 @@
+class SDMXRestProviderError(Exception):
+    pass
