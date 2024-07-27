@@ -10,7 +10,6 @@ from fennec_api.sdmx_v21.parser import (
     parse_structure,
     Structure,
     Error,
-    CodedStatusMessageType,
     DataflowType,
     DataStructureType2,
     CategorySchemeType,
@@ -26,13 +25,6 @@ from fennec_api.sdmx_v21.parser import (
     ConceptSchemeType,
 )
 from fennec_api.sdmx_v21.exceptions import SDMXRestProviderError
-
-
-def _to_error_message(error: Error) -> str:
-    def handle_message(m: CodedStatusMessageType) -> str:
-        return f"{m.code}: {','.join(el.value for el in m.text)}"
-
-    return "\n".join(map(handle_message, error.error_message))
 
 
 def _to_structure_req(ref: RefBaseType) -> SDMX21StructureRequest:
@@ -96,18 +88,11 @@ def _to_structure_req(ref: RefBaseType) -> SDMX21StructureRequest:
 async def fetch_structure(
     client: SDMX21RestClient, req: SDMX21StructureRequest
 ) -> Structure:
-    try:
-        msg = await client.get_structure(req=req)
-    except Exception as e:
-        raise SDMXRestProviderError(e)
-
-    try:
-        structure = parse_structure(msg)
-    except Exception as e:
-        raise SDMXRestProviderError(e)
+    msg = await client.get_structure(req=req)
+    structure = parse_structure(msg)
 
     if isinstance(structure, Error):
-        raise SDMXRestProviderError(_to_error_message(structure))
+        raise SDMXRestProviderError(msg.decode())
 
     return structure
 

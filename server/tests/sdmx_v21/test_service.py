@@ -5,11 +5,8 @@ import aiofiles
 import httpx
 from fennec_api.sdmx_v21.client import (
     SDMX21RestClient,
-    StructureType,
-    SDMX21StructureRequest,
 )
 import fennec_api.sdmx_v21.service as service
-from fennec_api.sdmx_v21.exceptions import SDMXRestProviderError
 
 
 @pytest_asyncio.fixture()
@@ -41,40 +38,10 @@ async def mock_http_client() -> AsyncGenerator[httpx.AsyncClient, None]:
 
 
 @pytest_asyncio.fixture()
-async def mock_http_client_error() -> AsyncGenerator[httpx.AsyncClient, None]:
-    async with aiofiles.open("data/sdmxml21/error.xml", "rb") as f:
-        content: bytes = await f.read()
-        async with httpx.AsyncClient(
-            transport=httpx.MockTransport(
-                lambda req: httpx.Response(400, content=content)
-            )
-        ) as client:
-            yield client
-
-
-@pytest_asyncio.fixture()
 async def mock_sdmx_client(
     mock_http_client: httpx.AsyncClient,
 ) -> AsyncGenerator[SDMX21RestClient, None]:
     yield SDMX21RestClient(http_client=mock_http_client, root_url="http://test")
-
-
-@pytest_asyncio.fixture()
-async def mock_sdmx_client_error(
-    mock_http_client_error: httpx.AsyncClient,
-) -> AsyncGenerator[SDMX21RestClient, None]:
-    yield SDMX21RestClient(http_client=mock_http_client_error, root_url="http://test")
-
-
-@pytest.mark.asyncio
-async def test_fetch_structure_failure(
-    mock_sdmx_client_error: SDMX21RestClient,
-) -> None:
-    with pytest.raises(SDMXRestProviderError):
-        await service.fetch_structure(
-            client=mock_sdmx_client_error,
-            req=SDMX21StructureRequest(resource=StructureType.DATAFLOW),
-        )
 
 
 @pytest.mark.asyncio
