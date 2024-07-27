@@ -55,3 +55,4 @@ jobs:
               with:
                 token: ${{ secrets.CODECOV_TOKEN }}
                 slug: saiqi/fennec
+                fail_ci_if_error: false
