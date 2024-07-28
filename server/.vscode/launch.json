@@ -8,6 +8,14 @@
             "module": "uvicorn",
             "envFile": "${workspaceFolder}/.env",
             "args": ["fennec_api.main:app", "--reload"]
+        },
+        {
+            "name": "Python: ARQ",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "arq",
+            "envFile": "${workspaceFolder}/.env",
+            "args": ["fennec_api.worker.WorkerSettings"]
         }
     ]
 }
