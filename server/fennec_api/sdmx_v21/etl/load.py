@@ -216,7 +216,7 @@ async def load_category_schemes(
         categories: list[Category2],
         *,
         scheme_id: str,
-        scheme_agency_id,
+        scheme_agency_id: str,
         scheme_version: str,
         parent_id: str | None = None,
     ) -> Iterable[tuple[str, str, str, str | None, Category2]]:
