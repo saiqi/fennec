@@ -10,7 +10,8 @@ async def startup(ctx: dict[str, Any]) -> None:
 
 
 async def shutdown(ctx: dict[str, Any]) -> None:
-    ctx["session"]
+    session: AsyncSession = ctx["session"]
+    await session.aclose()
 
 
 async def health_check_task(ctx: dict[str, Any]) -> None:

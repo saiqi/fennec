@@ -15,7 +15,7 @@ load_dotenv()
 from fennec_api.core.database import Base
 from fennec_api.core.config import settings
 from fennec_api.users.models import User
-
+import fennec_api.sdmx_v21.models
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
