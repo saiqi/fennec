@@ -4,7 +4,7 @@ import pytest_asyncio
 from sqlalchemy.ext.asyncio import AsyncSession
 from httpx import AsyncClient
 from fennec_api.sdmx_v21.models import Provider
-from fennec_api.sdmx_v21.schemas import ProviderCreate, ProviderUpdate
+from fennec_api.sdmx_v21.schemas import ProviderCreate
 from fennec_api.sdmx_v21.service import create_provider
 
 
