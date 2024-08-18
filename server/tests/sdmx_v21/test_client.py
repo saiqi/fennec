@@ -4,6 +4,7 @@ from fennec_api.sdmx_v21.client import (
     build_default_structure_path,
     build_default_structure_params,
     build_default_structure_headers,
+    build_root_url,
     ReferencesType,
     DetailType,
 )
@@ -56,3 +57,13 @@ def test_default_structure_headers_builder() -> None:
     assert build_default_structure_headers() == {
         "Accept": "application/vnd.sdmx.structure+xml;version=2.1"
     }
+
+
+def test_build_root_url() -> None:
+    root_url = "https://www.bdm.insee.fr/series/sdmx"
+    path = "dataflow/FR1/BALANCE-PAIEMENTS"
+
+    assert (
+        build_root_url(root_url=root_url, path=path)
+        == "https://www.bdm.insee.fr/series/sdmx/dataflow/FR1/BALANCE-PAIEMENTS"
+    )
