@@ -28,6 +28,9 @@ async def test_manage_provider(
     providers = await service.list_providers(session, offset=0, limit=100)
     assert len(providers) == 1
 
+    all_providers = await service.list_providers(session, offset=0, limit=-1)
+    assert len(all_providers) == 1
+
     provider = await service.get_provider(session, id=created_provider.id)
     assert provider
 

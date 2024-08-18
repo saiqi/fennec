@@ -32,15 +32,26 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return result.scalars().first()
 
     async def get_multi(
-        self, session: AsyncSession, *args: Any, offset: int, limit: int, **kwargs
+        self,
+        session: AsyncSession,
+        *args: Any,
+        offset: int = 0,
+        limit: int = -1,
+        **kwargs: Any,
     ) -> Sequence[ModelType]:
-        result = await session.execute(
-            select(self._model)
-            .filter(*args)
-            .filter_by(**kwargs)
-            .offset(offset)
-            .limit(limit)
+        stmt = (
+            (
+                select(self._model)
+                .filter(*args)
+                .filter_by(**kwargs)
+                .offset(offset)
+                .limit(limit)
+            )
+            if limit >= 0
+            else (select(self._model).filter(*args).filter_by(**kwargs).offset(offset))
         )
+
+        result = await session.execute(stmt)
         return result.scalars().all()
 
     async def update(
