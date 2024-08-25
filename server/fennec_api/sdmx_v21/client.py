@@ -74,6 +74,12 @@ def build_default_structure_headers() -> dict[str, str]:
     return {"Accept": STRUCTURE_CONTENT_TYPE}
 
 
+def build_root_url(*, root_url: str, path: str) -> str:
+    if not root_url.endswith("/"):
+        return urljoin(root_url + "/", path)
+    return urljoin(root_url, path)
+
+
 class SDMX21RestClient:
     def __init__(
         self,
@@ -100,7 +106,7 @@ class SDMX21RestClient:
         params: dict[str, str] | None = None,
         headers: dict[str, str] | None = None,
     ) -> bytes:
-        url = urljoin(self.root_url, path)
+        url = build_root_url(root_url=self.root_url, path=path)
         r = await self.http_client.get(url, params=params, headers=headers)
         r.raise_for_status()
         return r.content

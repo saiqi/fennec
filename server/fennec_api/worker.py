@@ -3,6 +3,7 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 from fennec_api.core.database import SessionLocal
 from fennec_api.core.arq import redis_settings
+from fennec_api.sdmx_v21.tasks import collect_provider
 
 
 async def startup(ctx: dict[str, Any]) -> None:
@@ -20,7 +21,7 @@ async def health_check_task(ctx: dict[str, Any]) -> None:
 
 
 class WorkerSettings:
-    functions = [health_check_task]
+    functions = [health_check_task, collect_provider]
     on_startup = startup
     on_shutdown = shutdown
     redis_settings = redis_settings
