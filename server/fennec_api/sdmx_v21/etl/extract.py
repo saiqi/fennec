@@ -1,5 +1,4 @@
-from typing import Callable
-from itertools import groupby
+from typing import Iterable, Sequence
 import asyncio
 from fennec_api.sdmx_v21.client import (
     SDMX21RestClient,
@@ -14,10 +13,6 @@ from fennec_api.sdmx_v21.parser import (
     DataStructureType2,
     CategorySchemeType,
     CategorisationType,
-    Attribute2,
-    Dimension2,
-    TimeDimension2,
-    PrimaryMeasure2,
     RefBaseType,
     PackageTypeCodelistType,
     ObjectTypeCodelistType,
@@ -99,7 +94,7 @@ async def fetch_structure(
 
 async def fetch_all_dataflows(
     client: SDMX21RestClient, agency_id: str | None = None
-) -> list[DataflowType]:
+) -> Sequence[DataflowType]:
     msg = await fetch_structure(
         client=client,
         req=SDMX21StructureRequest(
@@ -113,7 +108,7 @@ async def fetch_all_dataflows(
 
 async def fetch_all_category_schemes(
     client: SDMX21RestClient, agency_id: str | None = None
-) -> list[CategorySchemeType]:
+) -> Sequence[CategorySchemeType]:
     msg = await fetch_structure(
         client=client,
         req=SDMX21StructureRequest(
@@ -127,7 +122,7 @@ async def fetch_all_category_schemes(
 
 async def fetch_all_categorisations(
     client: SDMX21RestClient, agency_id: str | None = None
-) -> list[CategorisationType]:
+) -> Sequence[CategorisationType]:
     msg = await fetch_structure(
         client=client,
         req=SDMX21StructureRequest(
@@ -139,12 +134,52 @@ async def fetch_all_categorisations(
     return msg.structures.categorisations.categorisation
 
 
+async def fetch_all_codelists(
+    client: SDMX21RestClient, agency_id: str | None = None
+) -> Sequence[CodelistType]:
+    msg = await fetch_structure(
+        client=client,
+        req=SDMX21StructureRequest(
+            resource=StructureType.CODELIST, agency_id=agency_id
+        ),
+    )
+    if not msg.structures or not msg.structures.codelists:
+        raise SDMXRestProviderError("No codelist found")
+    return msg.structures.codelists.codelist
+
+
+async def fetch_all_concept_schemes(
+    client: SDMX21RestClient, agency_id: str | None = None
+) -> Sequence[ConceptSchemeType]:
+    msg = await fetch_structure(
+        client=client,
+        req=SDMX21StructureRequest(
+            resource=StructureType.CONCEPTSCHEME, agency_id=agency_id
+        ),
+    )
+    if not msg.structures or not msg.structures.concepts:
+        raise SDMXRestProviderError("No concept scheme found")
+    return msg.structures.concepts.concept_scheme
+
+
+async def fetch_all_data_structures(
+    client: SDMX21RestClient, agency_id: str | None = None
+) -> Sequence[DataStructureType2]:
+    msg = await fetch_structure(
+        client=client,
+        req=SDMX21StructureRequest(
+            resource=StructureType.DATASTRUCTURE, agency_id=agency_id
+        ),
+    )
+    if not msg.structures or not msg.structures.data_structures:
+        raise SDMXRestProviderError("No data structure found")
+    return msg.structures.data_structures.data_structure
+
+
 async def fetch_data_structure(
-    client: SDMX21RestClient, dataflow: DataflowType
+    client: SDMX21RestClient, ref: RefBaseType
 ) -> DataStructureType2:
-    if not dataflow.structure or not dataflow.structure.ref:
-        raise SDMXRestProviderError("No data structure reference found")
-    req = _to_structure_req(dataflow.structure.ref)
+    req = _to_structure_req(ref)
     msg = await fetch_structure(client=client, req=req)
     if (
         not msg.structures
@@ -155,60 +190,9 @@ async def fetch_data_structure(
     return msg.structures.data_structures.data_structure[0]
 
 
-def _extract_refs(
-    data_structure: DataStructureType2,
-    extractor: Callable[
-        [Attribute2 | Dimension2 | TimeDimension2 | PrimaryMeasure2], RefBaseType | None
-    ],
-) -> list[RefBaseType]:
-    def extract_refs(
-        list_: list[Attribute2]
-        | list[Dimension2]
-        | list[TimeDimension2]
-        | list[PrimaryMeasure2],
-    ) -> list[RefBaseType]:
-        return [ref for el in list_ if (ref := extractor(el)) is not None]
-
-    if not data_structure.data_structure_components:
-        raise SDMXRestProviderError("No data structure components found")
-
-    refs: list[RefBaseType] = []
-    if data_structure.data_structure_components.dimension_list:
-        refs.extend(
-            extract_refs(
-                data_structure.data_structure_components.dimension_list.dimension
-            )
-        )
-        refs.extend(
-            extract_refs(
-                data_structure.data_structure_components.dimension_list.time_dimension
-            )
-        )
-    if data_structure.data_structure_components.attribute_list:
-        refs.extend(
-            extract_refs(
-                data_structure.data_structure_components.attribute_list.attribute
-            )
-        )
-    if (
-        data_structure.data_structure_components.measure_list
-        and data_structure.data_structure_components.measure_list.primary_measure
-    ):
-        measure_ref = extractor(
-            data_structure.data_structure_components.measure_list.primary_measure
-        )
-        if measure_ref:
-            refs.append(measure_ref)
-
-    def keyfunc(ref: RefBaseType) -> tuple[str | None, str | None, str | None]:
-        return (ref.id, ref.agency_id, ref.version)
-
-    return [k for k, _ in groupby(sorted(refs, key=keyfunc))]
-
-
 async def _fetch_from_refs(
-    client: SDMX21RestClient, refs: list[RefBaseType]
-) -> list[Structure]:
+    client: SDMX21RestClient, refs: Iterable[RefBaseType]
+) -> Sequence[Structure]:
     reqs = [_to_structure_req(ref) for ref in refs]
     return await asyncio.gather(
         *(fetch_structure(client=client, req=req) for req in reqs)
@@ -216,19 +200,8 @@ async def _fetch_from_refs(
 
 
 async def fetch_codelists(
-    client: SDMX21RestClient, data_structure: DataStructureType2
-) -> list[CodelistType]:
-    def extract_codelist(
-        component: Attribute2 | Dimension2 | TimeDimension2 | PrimaryMeasure2,
-    ) -> RefBaseType | None:
-        if (
-            not component.local_representation
-            or not component.local_representation.enumeration
-        ):
-            return None
-        return component.local_representation.enumeration.ref
-
-    refs = _extract_refs(data_structure, extract_codelist)
+    client: SDMX21RestClient, refs: Iterable[RefBaseType]
+) -> Sequence[CodelistType]:
     results = await _fetch_from_refs(client, refs)
     return [
         cl
@@ -239,16 +212,8 @@ async def fetch_codelists(
 
 
 async def fetch_concept_schemes(
-    client: SDMX21RestClient, data_structure: DataStructureType2
-) -> list[ConceptSchemeType]:
-    def extract_concept(
-        component: Attribute2 | Dimension2 | TimeDimension2 | PrimaryMeasure2,
-    ) -> RefBaseType | None:
-        if not component.concept_identity:
-            return None
-        return component.concept_identity.ref
-
-    refs = _extract_refs(data_structure, extract_concept)
+    client: SDMX21RestClient, refs: Iterable[RefBaseType]
+) -> Sequence[ConceptSchemeType]:
     results = await _fetch_from_refs(client, refs)
     return [
         c

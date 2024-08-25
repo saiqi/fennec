@@ -24,7 +24,7 @@ sentry_sdk.init(
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     queue.pool = await create_pool(redis_settings)
     yield
-    await queue.pool.aclose()  # pyright: ignore
+    await queue.pool.close()
 
 
 app = FastAPI(lifespan=lifespan)

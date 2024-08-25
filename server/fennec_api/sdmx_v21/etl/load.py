@@ -1,4 +1,4 @@
-from typing import Any, Iterable
+from typing import Any, Sequence
 from collections import defaultdict
 from sqlalchemy.ext.asyncio import AsyncSession
 from fennec_api.etl.postgres import upsert
@@ -10,11 +10,10 @@ from fennec_api.sdmx_v21.parser import (
     TimeDimension2,
     PrimaryMeasure2,
     CategorySchemeType,
-    Category2,
-    NameableType,
     CodelistType,
     ConceptSchemeType,
     CategorisationType,
+    ComponentType,
 )
 from fennec_api.sdmx_v21.models import (
     Dataflow,
@@ -31,27 +30,19 @@ from fennec_api.sdmx_v21.models import (
     Concept,
     Categorisation,
 )
+from fennec_api.sdmx_v21.etl.transform import flatten_categories, extract_labels
 
 
-def _extract_labels(
-    entity: NameableType,
-) -> dict[str, str | None]:
-    return {
-        "name": next((n.value for n in entity.name if n.lang == "en"), None),
-        "description": next(
-            (n.value for n in entity.description if n.lang == "en"), None
-        ),
-    }
-
-
-async def load_dataflows(session: AsyncSession, dataflows: list[DataflowType]) -> None:
+async def load_dataflows(
+    session: AsyncSession, dataflows: Sequence[DataflowType]
+) -> None:
     records = (
         {
             "id": df.id,
             "agency_id": df.agency_id,
             "version": df.version,
             "urn": df.urn,
-            **_extract_labels(df),
+            **extract_labels(df),
             "structure_id": df.structure.ref.id,
             "structure_agency_id": df.structure.ref.agency_id,
             "structure_version": df.structure.ref.version,
@@ -69,11 +60,11 @@ async def load_dataflows(session: AsyncSession, dataflows: list[DataflowType]) -
     await upsert(session, model=Dataflow, records=records)
 
 
-async def load_data_structure(
-    session: AsyncSession, data_structures: list[DataStructureType2]
+async def load_data_structures(
+    session: AsyncSession, data_structures: Sequence[DataStructureType2]
 ) -> None:
     def extract_concept(
-        r: TimeDimension2 | Dimension2 | Attribute2 | PrimaryMeasure2,
+        r: ComponentType,
     ) -> dict[str, Any]:
         if not r.concept_identity or not r.concept_identity.ref:
             return defaultdict(lambda: None)
@@ -88,7 +79,7 @@ async def load_data_structure(
         )
 
     def extract_repr(
-        r: TimeDimension2 | Dimension2 | Attribute2 | PrimaryMeasure2,
+        r: ComponentType,
     ) -> dict[str, Any]:
         if not r.local_representation:
             return defaultdict(lambda: None)
@@ -121,7 +112,7 @@ async def load_data_structure(
 
     def to_component_record(
         data_structure: DataStructureType2,
-        r: TimeDimension2 | Dimension2 | Attribute2 | PrimaryMeasure2,
+        r: ComponentType,
     ) -> dict[str, Any]:
         obj: dict[str, Any] = dict(
             id=r.id,
@@ -151,7 +142,7 @@ async def load_data_structure(
             agency_id=data_structure.agency_id,
             version=data_structure.version,
             urn=data_structure.urn,
-            **_extract_labels(data_structure),
+            **extract_labels(data_structure),
         )
         for data_structure in data_structures
     )
@@ -198,7 +189,7 @@ async def load_data_structure(
 
 
 async def load_category_schemes(
-    session: AsyncSession, category_schemes: list[CategorySchemeType]
+    session: AsyncSession, category_schemes: Sequence[CategorySchemeType]
 ) -> None:
     scheme_records = (
         {
@@ -206,35 +197,17 @@ async def load_category_schemes(
             "agency_id": cs.agency_id,
             "version": cs.version,
             "urn": cs.urn,
-            **_extract_labels(cs),
+            **extract_labels(cs),
         }
         for cs in category_schemes
     )
     await upsert(session, model=CategoryScheme, records=scheme_records)
 
-    def flatten_categories(
-        categories: list[Category2],
-        *,
-        scheme_id: str,
-        scheme_agency_id: str,
-        scheme_version: str,
-        parent_id: str | None = None,
-    ) -> Iterable[tuple[str, str, str, str | None, Category2]]:
-        for c in categories:
-            yield scheme_id, scheme_agency_id, scheme_version, parent_id, c
-            yield from flatten_categories(
-                c.category,
-                scheme_id=scheme_id,
-                scheme_agency_id=scheme_agency_id,
-                scheme_version=scheme_version,
-                parent_id=c.id,
-            )
-
     category_records = (
         {
             "id": c.id,
             "urn": c.urn,
-            **_extract_labels(c),
+            **extract_labels(c),
             "category_scheme_id": cs.id,
             "category_scheme_agency_id": cs.agency_id,
             "category_scheme_version": cs.version,
@@ -255,14 +228,16 @@ async def load_category_schemes(
     await upsert(session, model=Category, records=category_records)
 
 
-async def load_codelists(session: AsyncSession, codelists: list[CodelistType]) -> None:
+async def load_codelists(
+    session: AsyncSession, codelists: Sequence[CodelistType]
+) -> None:
     codelist_records = (
         {
             "id": cl.id,
             "agency_id": cl.agency_id,
             "version": cl.version,
             "urn": cl.urn,
-            **_extract_labels(cl),
+            **extract_labels(cl),
         }
         for cl in codelists
     )
@@ -272,7 +247,7 @@ async def load_codelists(session: AsyncSession, codelists: list[CodelistType]) -
         {
             "id": c.id,
             "urn": c.urn,
-            **_extract_labels(c),
+            **extract_labels(c),
             "codelist_id": cl.id,
             "codelist_agency_id": cl.agency_id,
             "codelist_version": cl.version,
@@ -284,7 +259,7 @@ async def load_codelists(session: AsyncSession, codelists: list[CodelistType]) -
 
 
 async def load_concept_schemes(
-    session: AsyncSession, concept_schemes: list[ConceptSchemeType]
+    session: AsyncSession, concept_schemes: Sequence[ConceptSchemeType]
 ) -> None:
     concept_scheme_records = (
         {
@@ -292,7 +267,7 @@ async def load_concept_schemes(
             "agency_id": cs.agency_id,
             "version": cs.version,
             "urn": cs.urn,
-            **_extract_labels(cs),
+            **extract_labels(cs),
         }
         for cs in concept_schemes
     )
@@ -302,7 +277,7 @@ async def load_concept_schemes(
         {
             "id": c.id,
             "urn": c.urn,
-            **_extract_labels(c),
+            **extract_labels(c),
             "concept_scheme_id": cs.id,
             "concept_scheme_agency_id": cs.agency_id,
             "concept_scheme_version": cs.version,
@@ -314,7 +289,7 @@ async def load_concept_schemes(
 
 
 async def load_categorisations(
-    session: AsyncSession, categorisations: list[CategorisationType]
+    session: AsyncSession, categorisations: Sequence[CategorisationType]
 ) -> None:
     categorisation_records = (
         {
@@ -322,7 +297,7 @@ async def load_categorisations(
             "agency_id": c.agency_id,
             "version": c.version,
             "urn": c.urn,
-            **_extract_labels(c),
+            **extract_labels(c),
             "source_id": c.source.ref.id,
             "source_agency_id": c.source.ref.agency_id,
             "source_version": c.source.ref.version,

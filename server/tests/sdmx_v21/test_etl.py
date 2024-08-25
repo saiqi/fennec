@@ -1,4 +1,4 @@
-from typing import AsyncGenerator
+from typing import AsyncGenerator, Sequence
 import pytest
 import pytest_asyncio
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -9,9 +9,16 @@ import httpx
 from fennec_api.sdmx_v21.client import (
     SDMX21RestClient,
 )
-import fennec_api.sdmx_v21.etl.extract as extract
-import fennec_api.sdmx_v21.etl.load as load
-from fennec_api.sdmx_v21.parser import parse_structure
+import fennec_api.sdmx_v21.etl as etl
+from fennec_api.sdmx_v21.parser import (
+    parse_structure,
+    DataflowType,
+    DataStructureType2,
+    CategorySchemeType,
+    CategorisationType,
+    CodelistType,
+    ConceptSchemeType,
+)
 from fennec_api.sdmx_v21.parser import Structure
 from fennec_api.sdmx_v21.models import (
     Dataflow,
@@ -24,29 +31,142 @@ from fennec_api.sdmx_v21.models import (
 )
 
 
+async def open_fixture(path: str) -> bytes:
+    async with aiofiles.open(path, "rb") as f:
+        content: bytes = await f.read()
+        return content
+
+
 @pytest_asyncio.fixture()
-async def mock_http_client() -> AsyncGenerator[httpx.AsyncClient, None]:
+async def categorisation_data() -> AsyncGenerator[bytes, None]:
+    yield await open_fixture("data/sdmxml21/categorisation.xml")
+
+
+@pytest_asyncio.fixture()
+async def categorisations(
+    categorisation_data: bytes,
+) -> AsyncGenerator[Sequence[CategorisationType], None]:
+    msg = parse_structure(categorisation_data)
+    assert isinstance(msg, Structure)
+    assert msg.structures
+    assert msg.structures.categorisations
+    yield msg.structures.categorisations.categorisation
+
+
+@pytest_asyncio.fixture()
+async def category_scheme_data() -> AsyncGenerator[bytes, None]:
+    yield await open_fixture("data/sdmxml21/categoryscheme.xml")
+
+
+@pytest_asyncio.fixture()
+async def category_schemes(
+    category_scheme_data: bytes,
+) -> AsyncGenerator[Sequence[CategorySchemeType], None]:
+    msg = parse_structure(category_scheme_data)
+    assert isinstance(msg, Structure)
+    assert msg.structures
+    assert msg.structures.category_schemes
+    yield msg.structures.category_schemes.category_scheme
+
+
+@pytest_asyncio.fixture()
+async def codelist_data() -> AsyncGenerator[bytes, None]:
+    yield await open_fixture("data/sdmxml21/codelist.xml")
+
+
+@pytest_asyncio.fixture()
+async def codelists(
+    codelist_data: bytes,
+) -> AsyncGenerator[Sequence[CodelistType], None]:
+    msg = parse_structure(codelist_data)
+    assert isinstance(msg, Structure)
+    assert msg.structures
+    assert msg.structures.codelists
+    yield msg.structures.codelists.codelist
+
+
+@pytest_asyncio.fixture()
+async def concept_scheme_data() -> AsyncGenerator[bytes, None]:
+    yield await open_fixture("data/sdmxml21/conceptscheme.xml")
+
+
+@pytest_asyncio.fixture()
+async def concept_schemes(
+    concept_scheme_data: bytes,
+) -> AsyncGenerator[Sequence[ConceptSchemeType], None]:
+    msg = parse_structure(concept_scheme_data)
+    assert isinstance(msg, Structure)
+    assert msg.structures
+    assert msg.structures.concepts
+    yield msg.structures.concepts.concept_scheme
+
+
+@pytest_asyncio.fixture()
+async def content_constraint_data() -> AsyncGenerator[bytes, None]:
+    yield await open_fixture("data/sdmxml21/contentconstraint.xml")
+
+
+@pytest_asyncio.fixture()
+async def dataflow_data() -> AsyncGenerator[bytes, None]:
+    yield await open_fixture("data/sdmxml21/dataflow.xml")
+
+
+@pytest_asyncio.fixture()
+async def dataflows(
+    dataflow_data: bytes,
+) -> AsyncGenerator[Sequence[DataflowType], None]:
+    msg = parse_structure(dataflow_data)
+    assert isinstance(msg, Structure)
+    assert msg.structures
+    assert msg.structures.dataflows
+    yield msg.structures.dataflows.dataflow
+
+
+@pytest_asyncio.fixture()
+async def data_structure_data() -> AsyncGenerator[bytes, None]:
+    yield await open_fixture("data/sdmxml21/datastructure.xml")
+
+
+@pytest_asyncio.fixture()
+async def data_structure(
+    data_structure_data: bytes,
+) -> AsyncGenerator[Sequence[DataStructureType2], None]:
+    msg = parse_structure(data_structure_data)
+    assert isinstance(msg, Structure)
+    assert msg.structures
+    assert msg.structures.data_structures
+    yield msg.structures.data_structures.data_structure
+
+
+@pytest_asyncio.fixture()
+async def mock_http_client(
+    categorisation_data: bytes,
+    category_scheme_data: bytes,
+    codelist_data: bytes,
+    concept_scheme_data: bytes,
+    content_constraint_data: bytes,
+    dataflow_data: bytes,
+    data_structure_data: bytes,
+) -> AsyncGenerator[httpx.AsyncClient, None]:
     async def open_fixture(req: httpx.Request) -> httpx.Response:
         if "categorisation" in req.url.path:
-            path = "data/sdmxml21/categorisation.xml"
+            content = categorisation_data
         elif "categoryscheme" in req.url.path:
-            path = "data/sdmxml21/categoryscheme.xml"
+            content = category_scheme_data
         elif "codelist" in req.url.path:
-            path = "data/sdmxml21/codelist.xml"
+            content = codelist_data
         elif "conceptscheme" in req.url.path:
-            path = "data/sdmxml21/conceptscheme.xml"
+            content = concept_scheme_data
         elif "contentconstraint" in req.url.path:
-            path = "data/sdmxml21/contentconstraint.xml"
+            content = content_constraint_data
         elif "dataflow" in req.url.path:
-            path = "data/sdmxml21/dataflow.xml"
+            content = dataflow_data
         elif "datastructure" in req.url.path:
-            path = "data/sdmxml21/datastructure.xml"
+            content = data_structure_data
         else:
             raise NotImplementedError
 
-        async with aiofiles.open(path, "rb") as f:
-            content: bytes = await f.read()
-            return httpx.Response(200, content=content)
+        return httpx.Response(200, content=content)
 
     async with httpx.AsyncClient(transport=httpx.MockTransport(open_fixture)) as client:
         yield client
@@ -60,34 +180,39 @@ async def mock_sdmx_client(
 
 
 @pytest.mark.asyncio
-async def test_crawl_structures(mock_sdmx_client: SDMX21RestClient) -> None:
-    dataflows = await extract.fetch_all_dataflows(client=mock_sdmx_client)
-    await extract.fetch_all_categorisations(client=mock_sdmx_client)
-    await extract.fetch_all_category_schemes(client=mock_sdmx_client)
+async def test_crawl_structure(mock_sdmx_client: SDMX21RestClient) -> None:
+    dataflows = await etl.fetch_all_dataflows(mock_sdmx_client)
+    assert dataflows[0].id == "BALANCE-PAIEMENTS"
 
-    dataflow = dataflows[0]
-    data_structure = await extract.fetch_data_structure(
-        client=mock_sdmx_client, dataflow=dataflow
-    )
+    categorisations = await etl.fetch_all_categorisations(mock_sdmx_client)
+    assert categorisations[0].id == "COMMERCE_EXT_BALANCE-PAIEMENTS"
 
-    await extract.fetch_codelists(
-        client=mock_sdmx_client, data_structure=data_structure
+    category_schemes = await etl.fetch_all_category_schemes(mock_sdmx_client)
+    assert category_schemes[0].id == "CLASSEMENT_DATAFLOWS"
+
+    data_structures = [
+        await etl.fetch_data_structure(mock_sdmx_client, ref)
+        for ref in etl.extract_data_structure_refs(dataflows)
+    ]
+    assert data_structures[0].id == "BALANCE-PAIEMENTS"
+
+    codelist_refs = list(etl.extract_codelist_refs(data_structures))
+    concept_scheme_refs = list(etl.extract_concept_refs(data_structures))
+
+    codelists = await etl.fetch_codelists(mock_sdmx_client, codelist_refs)
+    assert codelists[0].id == "CL_PERIODICITE"
+
+    concept_schemes = await etl.fetch_concept_schemes(
+        mock_sdmx_client, concept_scheme_refs
     )
-    await extract.fetch_concept_schemes(
-        client=mock_sdmx_client, data_structure=data_structure
-    )
+    assert concept_schemes[0].id == "CONCEPTS_INSEE"
 
 
 @pytest.mark.asyncio
-async def test_load_dataflows(session: AsyncSession) -> None:
-    with open("data/sdmxml21/dataflow.xml", "rb") as f:
-        msg = parse_structure(f.read())
-        assert isinstance(msg, Structure)
-        assert msg.structures
-        assert msg.structures.dataflows
-        dataflows = msg.structures.dataflows.dataflow
-
-    await load.load_dataflows(session, dataflows)
+async def test_load_dataflows(
+    session: AsyncSession, dataflows: Sequence[DataflowType]
+) -> None:
+    await etl.load_dataflows(session, dataflows)
     result_insert = await session.execute(
         select(Dataflow).filter(
             Dataflow.id == "BALANCE-PAIEMENTS",
@@ -115,15 +240,10 @@ async def test_load_dataflows(session: AsyncSession) -> None:
 
 
 @pytest.mark.asyncio
-async def test_load_data_structure(session: AsyncSession) -> None:
-    with open("data/sdmxml21/datastructure.xml", "rb") as f:
-        msg = parse_structure(f.read())
-        assert isinstance(msg, Structure)
-        assert msg.structures
-        assert msg.structures.data_structures
-        data_structure = msg.structures.data_structures.data_structure
-
-    await load.load_data_structure(session, data_structure)
+async def test_load_data_structure(
+    session: AsyncSession, data_structure: Sequence[DataStructureType2]
+) -> None:
+    await etl.load_data_structures(session, data_structure)
 
     inserted_result = await session.execute(
         select(DataStructure).filter(
@@ -212,15 +332,10 @@ async def test_load_data_structure(session: AsyncSession) -> None:
 
 
 @pytest.mark.asyncio
-async def test_load_category_schemes(session: AsyncSession) -> None:
-    with open("data/sdmxml21/categoryscheme.xml", "rb") as f:
-        msg = parse_structure(f.read())
-        assert isinstance(msg, Structure)
-        assert msg.structures
-        assert msg.structures.category_schemes
-        category_schemes = msg.structures.category_schemes.category_scheme
-
-    await load.load_category_schemes(session, category_schemes)
+async def test_load_category_schemes(
+    session: AsyncSession, category_schemes: Sequence[CategorySchemeType]
+) -> None:
+    await etl.load_category_schemes(session, category_schemes)
 
     inserted_result = await session.execute(
         select(CategoryScheme)
@@ -268,15 +383,10 @@ async def test_load_category_schemes(session: AsyncSession) -> None:
 
 
 @pytest.mark.asyncio
-async def test_load_codelists(session: AsyncSession) -> None:
-    with open("data/sdmxml21/codelist.xml", "rb") as f:
-        msg = parse_structure(f.read())
-        assert isinstance(msg, Structure)
-        assert msg.structures
-        assert msg.structures.codelists
-        codelists = msg.structures.codelists.codelist
-
-    await load.load_codelists(session, codelists)
+async def test_load_codelists(
+    session: AsyncSession, codelists: Sequence[CodelistType]
+) -> None:
+    await etl.load_codelists(session, codelists)
 
     inserted_result = await session.execute(
         select(Codelist).filter(
@@ -306,15 +416,10 @@ async def test_load_codelists(session: AsyncSession) -> None:
 
 
 @pytest.mark.asyncio
-async def test_load_concept_schemes(session: AsyncSession) -> None:
-    with open("data/sdmxml21/conceptscheme.xml", "rb") as f:
-        msg = parse_structure(f.read())
-        assert isinstance(msg, Structure)
-        assert msg.structures
-        assert msg.structures.concepts
-        concept_scheme = msg.structures.concepts.concept_scheme
-
-    await load.load_concept_schemes(session, concept_scheme)
+async def test_load_concept_schemes(
+    session: AsyncSession, concept_schemes: Sequence[ConceptSchemeType]
+) -> None:
+    await etl.load_concept_schemes(session, concept_schemes)
 
     inserted_result = await session.execute(
         select(ConceptScheme).filter(
@@ -344,15 +449,10 @@ async def test_load_concept_schemes(session: AsyncSession) -> None:
 
 
 @pytest.mark.asyncio
-async def test_load_categorisations(session: AsyncSession) -> None:
-    with open("data/sdmxml21/categorisation.xml", "rb") as f:
-        msg = parse_structure(f.read())
-        assert isinstance(msg, Structure)
-        assert msg.structures
-        assert msg.structures.categorisations
-        categorisations = msg.structures.categorisations.categorisation
-
-    await load.load_categorisations(session, categorisations)
+async def test_load_categorisations(
+    session: AsyncSession, categorisations: Sequence[CategorisationType]
+) -> None:
+    await etl.load_categorisations(session, categorisations)
 
     inserted_result = await session.execute(
         select(Categorisation).filter(
@@ -383,3 +483,28 @@ async def test_load_categorisations(session: AsyncSession) -> None:
     assert inserted_categorisations[0].target_agency_id == "FR1"
     assert inserted_categorisations[0].target_package == "categoryscheme"
     assert inserted_categorisations[0].target_class == "Category"
+
+
+@pytest.mark.asyncio
+async def test_extract_data_structure_refs(dataflows: Sequence[DataflowType]) -> None:
+    dup_dataflows = [d for d in dataflows] + [d for d in dataflows]
+    unique_refs = list(etl.extract_data_structure_refs(dup_dataflows))
+    assert len(unique_refs) == 1
+
+
+@pytest.mark.asyncio
+async def test_extract_codelist_refs(
+    data_structure: Sequence[DataStructureType2],
+) -> None:
+    dup_dsds = [d for d in data_structure] + [d for d in data_structure]
+    unique_refs = list(etl.extract_codelist_refs(dup_dsds))
+    assert len(unique_refs) == 14
+
+
+@pytest.mark.asyncio
+async def test_extract_concept_scheme_refs(
+    data_structure: Sequence[DataStructureType2],
+) -> None:
+    dup_dsds = [d for d in data_structure] + [d for d in data_structure]
+    unique_refs = list(etl.extract_concept_refs(dup_dsds))
+    assert len(unique_refs) == 23
