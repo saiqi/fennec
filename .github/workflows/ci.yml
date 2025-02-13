@@ -31,7 +31,7 @@ jobs:
             - name: Run typechecker
               run: poetry run mypy --strict --no-incremental .
             - name: Run tests
-              run: poetry run pytest -v --cov=./fennec_api --cov-report=xml
+              run: poetry run pytest -v --cov=./fennec_auth --cov-report=xml
               env:
                 ENVIRONMENT: test
                 DB_URI: sqlite+aiosqlite:///

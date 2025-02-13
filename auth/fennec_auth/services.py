@@ -291,12 +291,13 @@ async def add_permission(
             )
         )
 
-        client_application_permission = result.scalar_one_or_none()
-        if client_application_permission:
+        existing_permission = result.scalar_one_or_none()
+        if existing_permission:
             raise AlreadyAttachedPermission(
                 f"Permission {permission} already attached to user {model.id}"
             )
-        db_obj = UserPermission(user_id=model.id, permission_id=permission.id)
+        user_permission = UserPermission(user_id=model.id, permission_id=permission.id)
+        session.add(user_permission)
     else:
         result = await session.execute(
             select(ClientApplicationPermission).filter(
@@ -307,15 +308,15 @@ async def add_permission(
             )
         )
 
-        client_application_permission = result.scalar_one_or_none()
-        if client_application_permission:
+        existing_permission = result.scalar_one_or_none()
+        if existing_permission:
             raise AlreadyAttachedPermission(
                 f"Permission {permission} already attached to client application {model.id}"
             )
-        db_obj = ClientApplicationPermission(
+        client_application_permission = ClientApplicationPermission(
             client_application_id=model.id, permission_id=permission.id
         )
-    session.add(db_obj)
+        session.add(client_application_permission)
     await session.commit()
 
     return permission
