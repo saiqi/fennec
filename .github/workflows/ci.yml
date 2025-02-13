@@ -8,6 +8,40 @@ on:
             - main
 
 jobs:
+    ci-auth:
+        runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: ./auth
+        steps:
+            - name: Check out repository code
+              uses: actions/checkout@v4
+            - name: Setup Python
+              uses: actions/setup-python@v5
+              with:
+                python-version: "3.12"
+            - name: Setup poetry
+              uses: abatilo/actions-poetry@v2
+              with:
+                poetry-version: "1.7.1"
+            - name: Install dependencies
+              run: poetry install --with dev
+            - name: Run linter
+              run: poetry run ruff check .
+            - name: Run typechecker
+              run: poetry run mypy --strict --no-incremental .
+            - name: Run tests
+              run: poetry run pytest -v --cov=./fennec_api --cov-report=xml
+              env:
+                ENVIRONMENT: test
+                DB_URI: sqlite+aiosqlite:///
+                SECRET_KEY: supersecret
+            - name: Upload coverage reports to Codecov
+              uses: codecov/codecov-action@v4
+              with:
+                token: ${{ secrets.CODECOV_TOKEN }}
+                slug: saiqi/fennec
+                fail_ci_if_error: false
     ci-backend:
         runs-on: ubuntu-latest
         defaults:
@@ -15,7 +49,7 @@ jobs:
                 working-directory: ./server
         services:
             postgres:
-                image: postgres:15
+                image: postgres:16
                 env:
                     POSTGRES_PASSWORD: fennec_api
                     POSTGRES_USER: fennec_api
