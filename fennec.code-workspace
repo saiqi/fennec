@@ -19,7 +19,8 @@
 	"settings": {
 		"conventionalCommits.scopes": [
 			"auth",
-			"notebooks"
+			"notebooks",
+			"pipelines"
 		]
 	}
 }
