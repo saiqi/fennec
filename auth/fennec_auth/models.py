@@ -86,3 +86,14 @@ class User(Base):
     )
     group_id: Mapped[int] = mapped_column(ForeignKey("group.id"), nullable=True)
     groups: Mapped[Group] = relationship(back_populates="users")
+
+
+__all__ = [
+    "Base",
+    "Group",
+    "User",
+    "ClientApplication",
+    "Permission",
+    "UserPermission",
+    "ClientApplicationPermission",
+]
