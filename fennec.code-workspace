@@ -1,0 +1,24 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "auth"
+		},
+		{
+			"path": "server"
+		},
+		{
+			"path": "pipelines"
+		},
+		{
+			"path": "notebooks"
+		}
+	],
+	"settings": {
+		"conventionalCommits.scopes": [
+			"auth"
+		]
+	}
+}
