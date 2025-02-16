@@ -1,0 +1,25 @@
+---
+services:
+  db:
+    image: postgres:16
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "fennec_auth"]
+      interval: 5s
+      retries: 5
+    environment:
+      POSTGRES_USER: fennec_auth
+      POSTGRES_PASSWORD: fennec_auth
+      POSTGRES_DB: fennec_auth
+
+  broker:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
