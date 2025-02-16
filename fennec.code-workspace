@@ -18,7 +18,8 @@
 	],
 	"settings": {
 		"conventionalCommits.scopes": [
-			"auth"
+			"auth",
+			"notebooks"
 		]
 	}
 }
