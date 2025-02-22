@@ -4,6 +4,8 @@ import pytest
 import pytest_asyncio
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from jose import jwt
+from fennec_auth.config import settings
 import fennec_auth.schemas as schemas
 import fennec_auth.models as models
 import fennec_auth.services as services
@@ -670,6 +672,7 @@ async def test_list_client_application_permissions(
         ]
     )
     await session.commit()
+    await session.refresh(existing_alt_client_application)
 
     permissions = await services.list_permissions(
         session, model=existing_alt_client_application
@@ -677,3 +680,64 @@ async def test_list_client_application_permissions(
     assert sorted([p.id for p in permissions]) == sorted(
         [write_permission.id, read_permission.id]
     )
+
+
+@pytest.mark.asyncio
+async def test_create_access_token_happy_path(
+    session: AsyncSession,
+    existing_user: models.User,
+    existing_client_application: models.ClientApplication,
+) -> None:
+    read_permission = models.Permission(
+        client_application_id=existing_client_application.id, role="read"
+    )
+    session.add(read_permission)
+    await session.commit()
+
+    session.add_all(
+        [
+            models.UserPermission(
+                user_id=existing_user.id,
+                permission_id=read_permission.id,
+            ),
+        ]
+    )
+    await session.commit()
+    await session.refresh(existing_user)
+
+    token = await services.create_access_token(
+        session, model=existing_user, audience=existing_client_application.name
+    )
+
+    token_data = jwt.decode(
+        token,
+        key=settings.SECRET_KEY,
+        algorithms=["HS256"],
+        audience=existing_client_application.name,
+    )
+    assert token_data["sub"] == existing_user.user_name
+    assert token_data["groups"] is None
+    assert token_data["role"] == "read"
+    assert not token_data["admin"]
+
+
+@pytest.mark.asyncio
+async def test_create_access_token_failed_when_client_application_not_exists(
+    session: AsyncSession, existing_user: models.User
+) -> None:
+    with pytest.raises(exceptions.ClientApplicationNotFound):
+        await services.create_access_token(
+            session, model=existing_user, audience="unknown"
+        )
+
+
+@pytest.mark.asyncio
+async def test_create_access_token_failed_when_no_permission_is_attached(
+    session: AsyncSession,
+    existing_user: models.User,
+    existing_client_application: models.ClientApplication,
+) -> None:
+    with pytest.raises(exceptions.PermissionNotFound):
+        await services.create_access_token(
+            session, model=existing_user, audience=existing_client_application.name
+        )

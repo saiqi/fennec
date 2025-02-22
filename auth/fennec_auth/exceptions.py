@@ -24,3 +24,7 @@ class GroupNotFound(FennecAuthException):
 
 class ClientApplicationNotFound(FennecAuthException):
     pass
+
+
+class PermissionNotFound(FennecAuthException):
+    pass

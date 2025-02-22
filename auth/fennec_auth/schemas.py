@@ -84,3 +84,16 @@ class ClientApplicationOut(ClientApplicationBase):
     is_active: bool
     groups: GroupOut
     permissions: list["PermissionUpdate"] = Field(default_factory=list)
+
+
+class TokenData(BaseModel):
+    user_name: str
+    role: RoleType
+    groups: str
+    admin: bool
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: Literal["bearer"]
+    expires_in: int

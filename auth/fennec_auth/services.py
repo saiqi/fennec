@@ -1,4 +1,5 @@
 from typing import Sequence
+from datetime import timedelta
 from sqlalchemy import select, and_, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from fennec_auth.schemas import (
@@ -26,6 +27,7 @@ from fennec_auth.security import (
     verify_password,
     random_client_id,
     random_client_secret,
+    create_jwt_token,
 )
 from fennec_auth.exceptions import (
     AlreadyRegisteredUser,
@@ -34,7 +36,9 @@ from fennec_auth.exceptions import (
     AlreadyAttachedPermission,
     GroupNotFound,
     ClientApplicationNotFound,
+    PermissionNotFound,
 )
+from fennec_auth.config import settings
 
 
 async def list_groups(session: AsyncSession) -> Sequence[Group]:
@@ -218,7 +222,10 @@ async def reset_user_password(session: AsyncSession, user: User) -> User:
 
 
 async def _get_permission(
-    session: AsyncSession, *, client_application: ClientApplication, role: RoleType
+    session: AsyncSession,
+    *,
+    client_application: ClientApplication,
+    role: RoleType,
 ) -> Permission | None:
     result = await session.execute(
         select(Permission).filter(
@@ -247,17 +254,7 @@ async def _create_permission(
 async def list_permissions(
     session: AsyncSession, model: User | ClientApplication
 ) -> Sequence[Permission]:
-    if isinstance(model, User):
-        result = await session.execute(
-            select(UserPermission).filter(UserPermission.user_id == model.id)
-        )
-    else:
-        result = await session.execute(
-            select(ClientApplicationPermission).filter(
-                ClientApplicationPermission.client_application_id == model.id
-            )
-        )
-    return [el.permission for el in result.scalars()]
+    return model.permissions
 
 
 async def add_permission(
@@ -340,3 +337,37 @@ async def remove_permission(
             )
         )
     await session.commit()
+
+
+async def create_access_token(
+    session: AsyncSession, *, model: User | ClientApplication, audience: str
+) -> str:
+    expires_delta = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_IN_MINUTES)
+    audience_client_application = await get_client_application_by_name(
+        session, name=audience
+    )
+    if not audience_client_application:
+        raise ClientApplicationNotFound(f"Client application {audience} not found")
+    permission = next(
+        (
+            p
+            for p in model.permissions
+            if p.client_application_id == audience_client_application.id
+        ),
+        None,
+    )
+    if not permission:
+        raise PermissionNotFound(
+            f"No permission found on client application {audience}"
+        )
+    sub = model.user_name if isinstance(model, User) else model.name
+
+    claims = {
+        "sub": sub,
+        "groups": model.groups.name if model.groups else None,
+        "role": permission.role,
+        "admin": permission.role == "admin",
+        "aud": audience,
+    }
+
+    return create_jwt_token(data=claims, expires_delta=expires_delta)

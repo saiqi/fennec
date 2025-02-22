@@ -30,7 +30,14 @@ class ClientApplication(Base):
         DateTime, server_default=func.now(), onupdate=func.now()
     )
     group_id: Mapped[int] = mapped_column(ForeignKey("group.id"), nullable=True)
-    groups: Mapped[Group] = relationship(back_populates="client_applications")
+    groups: Mapped[Group] = relationship(
+        back_populates="client_applications", lazy="selectin"
+    )
+    permissions: Mapped[list["Permission"]] = relationship(
+        secondary="client_application_permission",
+        viewonly=True,
+        lazy="selectin",
+    )
 
 
 class Permission(Base):
@@ -51,7 +58,6 @@ class ClientApplicationPermission(Base):
     permission_id: Mapped[int] = mapped_column(
         ForeignKey("permission.id"), primary_key=True
     )
-    permission: Mapped[Permission] = relationship(lazy="selectin")
     client_application_id: Mapped[int] = mapped_column(
         ForeignKey("client_application.id"), primary_key=True
     )
@@ -63,7 +69,6 @@ class UserPermission(Base):
     permission_id: Mapped[int] = mapped_column(
         ForeignKey("permission.id"), primary_key=True
     )
-    permission: Mapped[Permission] = relationship(lazy="selectin")
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), primary_key=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
@@ -85,7 +90,12 @@ class User(Base):
         DateTime, server_default=func.now(), onupdate=func.now()
     )
     group_id: Mapped[int] = mapped_column(ForeignKey("group.id"), nullable=True)
-    groups: Mapped[Group] = relationship(back_populates="users")
+    groups: Mapped[Group | None] = relationship(back_populates="users", lazy="selectin")
+    permissions: Mapped[list[Permission]] = relationship(
+        secondary="user_permission",
+        lazy="selectin",
+        viewonly=True,
+    )
 
 
 __all__ = [
