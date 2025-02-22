@@ -1,92 +1,102 @@
 name: CI
+
 on:
-    pull_request:
-        branches:
-            - main
-    push:
-        branches:
-            - main
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'auth/**'
+      - 'server/**'
+  push:
+    branches:
+      - main
+    paths:
+      - 'auth/**'
+      - 'server/**'
 
 jobs:
-    ci-auth:
-        runs-on: ubuntu-latest
-        defaults:
-            run:
-                working-directory: ./auth
-        steps:
-            - name: Check out repository code
-              uses: actions/checkout@v4
-            - name: Setup Python
-              uses: actions/setup-python@v5
-              with:
-                python-version: "3.12"
-            - name: Setup poetry
-              uses: abatilo/actions-poetry@v2
-              with:
-                poetry-version: "1.7.1"
-            - name: Install dependencies
-              run: poetry install --with dev
-            - name: Run linter
-              run: poetry run ruff check .
-            - name: Run typechecker
-              run: poetry run mypy --strict --no-incremental .
-            - name: Run tests
-              run: poetry run pytest -v --cov=./fennec_auth --cov-report=xml
-              env:
-                ENVIRONMENT: test
-                DB_URI: sqlite+aiosqlite:///
-                SECRET_KEY: supersecret
-            - name: Upload coverage reports to Codecov
-              uses: codecov/codecov-action@v4
-              with:
-                token: ${{ secrets.CODECOV_TOKEN }}
-                slug: saiqi/fennec
-                fail_ci_if_error: false
-    ci-backend:
-        runs-on: ubuntu-latest
-        defaults:
-            run:
-                working-directory: ./server
-        services:
-            postgres:
-                image: postgres:16
-                env:
-                    POSTGRES_PASSWORD: fennec_api
-                    POSTGRES_USER: fennec_api
-                    POSTGRES_DB: fennec_api
-                options: >-
-                    --health-cmd pg_isready
-                    --health-interval 10s
-                    --health-timeout 5s
-                    --health-retries 5
-                ports:
-                    - 5432:5432
-        steps:
-            - name: Check out repository code
-              uses: actions/checkout@v4
-            - name: Setup Python
-              uses: actions/setup-python@v5
-              with:
-                python-version: "3.12"
-            - name: Setup poetry
-              uses: abatilo/actions-poetry@v2
-              with:
-                poetry-version: "1.7.1"
-            - name: Install dependencies
-              run: poetry install --with dev
-            - name: Run linter
-              run: poetry run ruff check .
-            - name: Run typechecker
-              run: poetry run mypy --strict --no-incremental .
-            - name: Run tests
-              run: poetry run pytest -v --cov=./fennec_api --cov-report=xml
-              env:
-                ENVIRONMENT: test
-                DB_URI: postgresql+asyncpg://fennec_api:fennec_api@localhost:5432/fennec_api
-                SECRET_KEY: supersecret
-            - name: Upload coverage reports to Codecov
-              uses: codecov/codecov-action@v4
-              with:
-                token: ${{ secrets.CODECOV_TOKEN }}
-                slug: saiqi/fennec
-                fail_ci_if_error: false
+  ci-auth:
+    if: contains(github.event.pull_request.changed_files[*].filename, 'auth/') || contains(github.event.head_commit.modified, 'auth/')
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./auth
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Setup poetry
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: "1.7.1"
+      - name: Install dependencies
+        run: poetry install --with dev
+      - name: Run linter
+        run: poetry run ruff check .
+      - name: Run typechecker
+        run: poetry run mypy --strict --no-incremental .
+      - name: Run tests
+        run: poetry run pytest -v --cov=./fennec_auth --cov-report=xml
+        env:
+          ENVIRONMENT: test
+          DB_URI: sqlite+aiosqlite:///
+          SECRET_KEY: supersecret
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: saiqi/fennec
+          fail_ci_if_error: false
+
+  ci-backend:
+    if: contains(github.event.pull_request.changed_files[*].filename, 'server/') || contains(github.event.head_commit.modified, 'server/')
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./server
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: fennec_api
+          POSTGRES_USER: fennec_api
+          POSTGRES_DB: fennec_api
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Setup poetry
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: "1.7.1"
+      - name: Install dependencies
+        run: poetry install --with dev
+      - name: Run linter
+        run: poetry run ruff check .
+      - name: Run typechecker
+        run: poetry run mypy --strict --no-incremental .
+      - name: Run tests
+        run: poetry run pytest -v --cov=./fennec_api --cov-report=xml
+        env:
+          ENVIRONMENT: test
+          DB_URI: postgresql+asyncpg://fennec_api:fennec_api@localhost:5432/fennec_api
+          SECRET_KEY: supersecret
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: saiqi/fennec
+          fail_ci_if_error: false
