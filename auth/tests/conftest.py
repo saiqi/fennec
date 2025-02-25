@@ -10,6 +10,8 @@ from sqlalchemy.ext.asyncio import AsyncConnection, AsyncSession
 from httpx import AsyncClient, ASGITransport
 from fennec_auth.database import Base, engine
 from fennec_auth.dependencies import get_session
+from fennec_auth.models import Group, User, ClientApplication
+from fennec_auth.security import get_password_hash
 from fennec_auth.main import app
 
 
@@ -47,3 +49,60 @@ async def test_client() -> AsyncGenerator[AsyncClient, None]:
         transport=ASGITransport(app=app),
     ) as client:
         yield client
+
+
+@pytest_asyncio.fixture()
+async def existing_user(session: AsyncSession) -> AsyncGenerator[User, None]:
+    user = User(
+        first_name="Fleury",
+        last_name="Dinallo",
+        user_name="fleury",
+        email="fleury@redstarfc.fr",
+        role="read",
+        password_hash=get_password_hash("password"),
+    )
+    session.add(user)
+    await session.commit()
+    await session.refresh(user)
+    yield user
+
+
+@pytest_asyncio.fixture()
+async def existing_group(session: AsyncSession) -> AsyncGenerator[Group, None]:
+    group = Group(name="red-star")
+    session.add(group)
+    await session.commit()
+    await session.refresh(group)
+    yield group
+
+
+@pytest_asyncio.fixture()
+async def existing_client_application(
+    session: AsyncSession,
+) -> AsyncGenerator[ClientApplication, None]:
+    client_application = ClientApplication(
+        name="red-star-api",
+        client_id="red-star-api",
+        client_secret_hash=get_password_hash("secret"),
+        is_active=True,
+    )
+    session.add(client_application)
+    await session.commit()
+    await session.refresh(client_application)
+    yield client_application
+
+
+@pytest_asyncio.fixture()
+async def existing_alt_client_application(
+    session: AsyncSession,
+) -> AsyncGenerator[ClientApplication, None]:
+    client_application = ClientApplication(
+        name="red-star-auth",
+        client_id="red-star-auth",
+        client_secret_hash=get_password_hash("secret"),
+        is_active=True,
+    )
+    session.add(client_application)
+    await session.commit()
+    await session.refresh(client_application)
+    yield client_application

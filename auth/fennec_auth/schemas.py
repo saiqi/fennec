@@ -96,4 +96,3 @@ class TokenData(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: Literal["bearer"]
-    expires_in: int

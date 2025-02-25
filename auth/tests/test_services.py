@@ -1,7 +1,5 @@
-from typing import AsyncGenerator
 from unittest.mock import patch
 import pytest
-import pytest_asyncio
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from jose import jwt
@@ -10,64 +8,7 @@ import fennec_auth.schemas as schemas
 import fennec_auth.models as models
 import fennec_auth.services as services
 import fennec_auth.exceptions as exceptions
-from fennec_auth.security import get_password_hash, verify_password
-
-
-@pytest_asyncio.fixture()
-async def existing_user(session: AsyncSession) -> AsyncGenerator[models.User, None]:
-    user = models.User(
-        first_name="Fleury",
-        last_name="Dinallo",
-        user_name="fleury",
-        email="fleury@redstarfc.fr",
-        role="read",
-        password_hash=get_password_hash("password"),
-    )
-    session.add(user)
-    await session.commit()
-    await session.refresh(user)
-    yield user
-
-
-@pytest_asyncio.fixture()
-async def existing_group(session: AsyncSession) -> AsyncGenerator[models.Group, None]:
-    group = models.Group(name="red-star")
-    session.add(group)
-    await session.commit()
-    await session.refresh(group)
-    yield group
-
-
-@pytest_asyncio.fixture()
-async def existing_client_application(
-    session: AsyncSession,
-) -> AsyncGenerator[models.ClientApplication, None]:
-    client_application = models.ClientApplication(
-        name="red-star-api",
-        client_id="red-star-api",
-        client_secret_hash=get_password_hash("secret"),
-        is_active=True,
-    )
-    session.add(client_application)
-    await session.commit()
-    await session.refresh(client_application)
-    yield client_application
-
-
-@pytest_asyncio.fixture()
-async def existing_alt_client_application(
-    session: AsyncSession,
-) -> AsyncGenerator[models.ClientApplication, None]:
-    client_application = models.ClientApplication(
-        name="red-star-auth",
-        client_id="red-star-auth",
-        client_secret_hash=get_password_hash("secret"),
-        is_active=True,
-    )
-    session.add(client_application)
-    await session.commit()
-    await session.refresh(client_application)
-    yield client_application
+from fennec_auth.security import verify_password
 
 
 @pytest.mark.asyncio
@@ -683,30 +624,130 @@ async def test_list_client_application_permissions(
 
 
 @pytest.mark.asyncio
-async def test_create_access_token_happy_path(
+async def test_check_admin_user_permissions(
     session: AsyncSession,
     existing_user: models.User,
     existing_client_application: models.ClientApplication,
 ) -> None:
-    read_permission = models.Permission(
-        client_application_id=existing_client_application.id, role="read"
+    admin_permission = models.Permission(
+        client_application_id=existing_client_application.id, role="admin"
     )
-    session.add(read_permission)
+    session.add(admin_permission)
     await session.commit()
 
     session.add_all(
         [
             models.UserPermission(
                 user_id=existing_user.id,
-                permission_id=read_permission.id,
+                permission_id=admin_permission.id,
             ),
         ]
     )
     await session.commit()
     await session.refresh(existing_user)
 
-    token = await services.create_access_token(
-        session, model=existing_user, audience=existing_client_application.name
+    assert services.check_permissions(
+        model=existing_user, scopes=[f"{existing_client_application.name}:read"]
+    )
+    assert services.check_permissions(
+        model=existing_user, scopes=[f"{existing_client_application.name}:write"]
+    )
+    assert services.check_permissions(
+        model=existing_user, scopes=[f"{existing_client_application.name}:admin"]
+    )
+    assert not services.check_permissions(model=existing_user, scopes=["unknown:read"])
+    assert not services.check_permissions(
+        model=existing_user,
+        scopes=[f"{existing_client_application.name}:read", "unknown:read"],
+    )
+
+
+@pytest.mark.asyncio
+async def test_check_write_user_permissions(
+    session: AsyncSession,
+    existing_user: models.User,
+    existing_client_application: models.ClientApplication,
+) -> None:
+    admin_permission = models.Permission(
+        client_application_id=existing_client_application.id, role="write"
+    )
+    session.add(admin_permission)
+    await session.commit()
+
+    session.add_all(
+        [
+            models.UserPermission(
+                user_id=existing_user.id,
+                permission_id=admin_permission.id,
+            ),
+        ]
+    )
+    await session.commit()
+    await session.refresh(existing_user)
+
+    assert services.check_permissions(
+        model=existing_user, scopes=[f"{existing_client_application.name}:read"]
+    )
+    assert services.check_permissions(
+        model=existing_user, scopes=[f"{existing_client_application.name}:write"]
+    )
+    assert not services.check_permissions(
+        model=existing_user, scopes=[f"{existing_client_application.name}:admin"]
+    )
+    assert not services.check_permissions(model=existing_user, scopes=["unknown:read"])
+    assert not services.check_permissions(
+        model=existing_user,
+        scopes=[f"{existing_client_application.name}:read", "unknown:read"],
+    )
+
+
+@pytest.mark.asyncio
+async def test_check_read_user_permissions(
+    session: AsyncSession,
+    existing_user: models.User,
+    existing_client_application: models.ClientApplication,
+) -> None:
+    admin_permission = models.Permission(
+        client_application_id=existing_client_application.id, role="read"
+    )
+    session.add(admin_permission)
+    await session.commit()
+
+    session.add_all(
+        [
+            models.UserPermission(
+                user_id=existing_user.id,
+                permission_id=admin_permission.id,
+            ),
+        ]
+    )
+    await session.commit()
+    await session.refresh(existing_user)
+
+    assert services.check_permissions(
+        model=existing_user, scopes=[f"{existing_client_application.name}:read"]
+    )
+    assert not services.check_permissions(
+        model=existing_user, scopes=[f"{existing_client_application.name}:write"]
+    )
+    assert not services.check_permissions(
+        model=existing_user, scopes=[f"{existing_client_application.name}:admin"]
+    )
+    assert not services.check_permissions(model=existing_user, scopes=["unknown:read"])
+    assert not services.check_permissions(
+        model=existing_user,
+        scopes=[f"{existing_client_application.name}:read", "unknown:read"],
+    )
+
+
+@pytest.mark.asyncio
+async def test_create_access_token_happy_path(
+    session: AsyncSession,
+    existing_user: models.User,
+    existing_client_application: models.ClientApplication,
+) -> None:
+    token = services.create_access_token(
+        model=existing_user, scopes=[f"{existing_client_application.name}:read"]
     )
 
     token_data = jwt.decode(
@@ -716,28 +757,9 @@ async def test_create_access_token_happy_path(
         audience=existing_client_application.name,
     )
     assert token_data["sub"] == existing_user.user_name
-    assert token_data["groups"] is None
-    assert token_data["role"] == "read"
-    assert not token_data["admin"]
-
-
-@pytest.mark.asyncio
-async def test_create_access_token_failed_when_client_application_not_exists(
-    session: AsyncSession, existing_user: models.User
-) -> None:
-    with pytest.raises(exceptions.ClientApplicationNotFound):
-        await services.create_access_token(
-            session, model=existing_user, audience="unknown"
-        )
-
-
-@pytest.mark.asyncio
-async def test_create_access_token_failed_when_no_permission_is_attached(
-    session: AsyncSession,
-    existing_user: models.User,
-    existing_client_application: models.ClientApplication,
-) -> None:
-    with pytest.raises(exceptions.PermissionNotFound):
-        await services.create_access_token(
-            session, model=existing_user, audience=existing_client_application.name
-        )
+    assert token_data["groups"] == []
+    assert token_data["iss"] == settings.CLIENT_NAME
+    assert token_data["scope"] == f"{existing_client_application.name}:read"
+    assert token_data["aud"] == [existing_client_application.name]
+    assert isinstance(token_data["exp"], int)
+    assert isinstance(token_data["iat"], int)

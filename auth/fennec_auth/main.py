@@ -1,6 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, APIRouter
 import sentry_sdk
 from fennec_auth.config import settings
+from fennec_auth.routers import auth_router
 
 
 sentry_sdk.init(
@@ -11,3 +12,8 @@ sentry_sdk.init(
 )
 
 app = FastAPI()
+
+router_v1 = APIRouter(prefix=settings.API_V1_PREFIX)
+router_v1.include_router(auth_router)
+
+app.include_router(router_v1)

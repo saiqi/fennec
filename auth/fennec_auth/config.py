@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_IN_MINUTES: int = 30
     SENTRY_DSN: str | None = None
+    CLIENT_NAME: str = "fennec-auth"
 
 
 settings = Settings()  # pyright: ignore

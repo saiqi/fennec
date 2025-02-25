@@ -36,7 +36,6 @@ from fennec_auth.exceptions import (
     AlreadyAttachedPermission,
     GroupNotFound,
     ClientApplicationNotFound,
-    PermissionNotFound,
 )
 from fennec_auth.config import settings
 
@@ -339,35 +338,34 @@ async def remove_permission(
     await session.commit()
 
 
-async def create_access_token(
-    session: AsyncSession, *, model: User | ClientApplication, audience: str
-) -> str:
+def create_access_token(model: User | ClientApplication, scopes: list[str]) -> str:
     expires_delta = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_IN_MINUTES)
-    audience_client_application = await get_client_application_by_name(
-        session, name=audience
-    )
-    if not audience_client_application:
-        raise ClientApplicationNotFound(f"Client application {audience} not found")
-    permission = next(
-        (
-            p
-            for p in model.permissions
-            if p.client_application_id == audience_client_application.id
-        ),
-        None,
-    )
-    if not permission:
-        raise PermissionNotFound(
-            f"No permission found on client application {audience}"
-        )
     sub = model.user_name if isinstance(model, User) else model.name
 
     claims = {
+        "iss": settings.CLIENT_NAME,
         "sub": sub,
-        "groups": model.groups.name if model.groups else None,
-        "role": permission.role,
-        "admin": permission.role == "admin",
-        "aud": audience,
+        "groups": [model.groups.name] if model.groups else [],
+        "aud": list(set(scope.split(":")[0] for scope in scopes)),
+        "scope": " ".join(scopes),
     }
 
     return create_jwt_token(data=claims, expires_delta=expires_delta)
+
+
+def check_permissions(model: User | ClientApplication, scopes: list[str]) -> bool:
+    for scope in scopes:
+        client_application_name, role = scope.split(":")
+        if role == "admin":
+            allowed_role = {"admin"}
+        elif role == "write":
+            allowed_role = {"admin", "write"}
+        else:
+            allowed_role = {"admin", "write", "read"}
+        if not any(
+            p.client_application.name == client_application_name
+            and p.role in allowed_role
+            for p in model.permissions
+        ):
+            return False
+    return True

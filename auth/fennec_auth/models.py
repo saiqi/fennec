@@ -51,6 +51,7 @@ class Permission(Base):
     client_application_id: Mapped[int] = mapped_column(
         ForeignKey("client_application.id"), nullable=False
     )
+    client_application: Mapped[ClientApplication] = relationship(lazy="selectin")
 
 
 class ClientApplicationPermission(Base):
