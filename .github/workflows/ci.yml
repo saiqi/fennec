@@ -16,7 +16,6 @@ on:
 
 jobs:
   ci-auth:
-    if: contains(github.event.pull_request.changed_files[*].filename, 'auth/') || contains(github.event.head_commit.modified, 'auth/')
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -52,7 +51,6 @@ jobs:
           fail_ci_if_error: false
 
   ci-backend:
-    if: contains(github.event.pull_request.changed_files[*].filename, 'server/') || contains(github.event.head_commit.modified, 'server/')
     runs-on: ubuntu-latest
     defaults:
       run:
