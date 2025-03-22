@@ -7,7 +7,16 @@ from fennec_auth.models import (
     User,
     ClientApplication,
     Permission,
+    Group,
 )
+from fennec_auth.services import create_access_token
+from fennec_auth.config import settings
+from fennec_auth.security import get_password_hash
+
+
+def create_self_headers(client: User | ClientApplication, role: str) -> dict[str, str]:
+    token = create_access_token(client, scopes=[f"{settings.CLIENT_NAME}:{role}"])
+    return {"Authorization": f"Bearer {token}"}
 
 
 @pytest_asyncio.fixture()
@@ -16,6 +25,62 @@ async def read_permission(
 ) -> AsyncGenerator[Permission, None]:
     permission = Permission(
         role="read", client_application_id=existing_client_application.id
+    )
+    session.add(permission)
+    await session.commit()
+    await session.refresh(permission)
+    yield permission
+
+
+@pytest_asyncio.fixture()
+async def self_client_application(
+    session: AsyncSession, existing_group: Group
+) -> AsyncGenerator[ClientApplication, None]:
+    client_application = ClientApplication(
+        name=settings.CLIENT_NAME,
+        client_id="self",
+        client_secret_hash=get_password_hash("secret"),
+        is_active=True,
+        group_id=existing_group.id,
+    )
+    session.add(client_application)
+    await session.commit()
+    await session.refresh(client_application)
+    yield client_application
+
+
+@pytest_asyncio.fixture()
+async def self_admin_permission(
+    session: AsyncSession, self_client_application: ClientApplication
+) -> AsyncGenerator[Permission, None]:
+    permission = Permission(
+        role="admin", client_application_id=self_client_application.id
+    )
+    session.add(permission)
+    await session.commit()
+    await session.refresh(permission)
+    yield permission
+
+
+@pytest_asyncio.fixture()
+async def self_read_permission(
+    session: AsyncSession, self_client_application: ClientApplication
+) -> AsyncGenerator[Permission, None]:
+    permission = Permission(
+        role="read", client_application_id=self_client_application.id
+    )
+    session.add(permission)
+    await session.commit()
+    await session.refresh(permission)
+    yield permission
+
+
+@pytest_asyncio.fixture()
+async def self_write_permission(
+    session: AsyncSession, self_client_application: ClientApplication
+) -> AsyncGenerator[Permission, None]:
+    permission = Permission(
+        role="write", client_application_id=self_client_application.id
     )
     session.add(permission)
     await session.commit()
@@ -280,3 +345,97 @@ async def test_login_failed_when_scopes_is_invalid(
         },
     )
     assert resp.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_user_internal_can_list_groups(
+    session: AsyncSession,
+    test_client: AsyncClient,
+    existing_user: User,
+    self_read_permission: Permission,
+) -> None:
+    existing_user.permissions.append(self_read_permission)
+    existing_user.is_external = False
+    await session.commit()
+
+    resp = await test_client.get(
+        "/api/v1/groups",
+        headers=create_self_headers(existing_user, "read"),
+    )
+    assert resp.status_code == 200
+
+
+@pytest.mark.asyncio
+async def test_user_external_cannot_list_groups(
+    session: AsyncSession,
+    test_client: AsyncClient,
+    existing_user: User,
+    self_read_permission: Permission,
+) -> None:
+    existing_user.permissions.append(self_read_permission)
+    await session.commit()
+
+    resp = await test_client.get(
+        "/api/v1/groups",
+        headers=create_self_headers(existing_user, "read"),
+    )
+    assert resp.status_code == 403
+
+
+@pytest.mark.asyncio
+async def test_user_internal_admin_can_create_group(
+    session: AsyncSession,
+    test_client: AsyncClient,
+    existing_user: User,
+    self_admin_permission: Permission,
+) -> None:
+    existing_user.permissions.append(self_admin_permission)
+    existing_user.is_external = False
+    await session.commit()
+
+    resp = await test_client.post(
+        "/api/v1/groups",
+        headers=create_self_headers(existing_user, "admin"),
+        json={"name": "besiktas"},
+    )
+
+    assert resp.status_code == 201
+
+
+@pytest.mark.asyncio
+async def test_user_internal_read_cannot_create_group(
+    session: AsyncSession,
+    test_client: AsyncClient,
+    existing_user: User,
+    self_read_permission: Permission,
+) -> None:
+    existing_user.permissions.append(self_read_permission)
+    existing_user.is_external = False
+    await session.commit()
+
+    resp = await test_client.post(
+        "/api/v1/groups",
+        headers=create_self_headers(existing_user, "read"),
+        json={"name": "besiktas"},
+    )
+
+    assert resp.status_code == 403
+
+
+@pytest.mark.asyncio
+async def test_user_external_admin_can_create_group(
+    session: AsyncSession,
+    test_client: AsyncClient,
+    existing_user: User,
+    self_admin_permission: Permission,
+) -> None:
+    existing_user.permissions.append(self_admin_permission)
+    await session.commit()
+
+    resp = await test_client.post(
+        "/api/v1/groups",
+        headers=create_self_headers(existing_user, "admin"),
+        json={"name": "besiktas"},
+    )
+
+    assert resp.status_code == 403

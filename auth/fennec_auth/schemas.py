@@ -4,6 +4,9 @@ from pydantic import BaseModel, EmailStr, Field
 allowed_roles = ["read", "write", "admin"]
 RoleType = Annotated[str, Literal[tuple(allowed_roles)]]
 
+allowed_client_types = ["user", "service"]
+ClientType = Annotated[str, Literal[tuple(allowed_client_types)]]
+
 
 class PasswordUpdate(BaseModel):
     password: str
@@ -40,8 +43,6 @@ class GroupCreate(GroupBase):
 
 class GroupOut(GroupBase):
     id: int
-    users: list["UserOut"] = Field(default_factory=list)
-    client_applications: list["ClientApplicationOut"] = Field(default_factory=list)
 
 
 class UserBase(BaseModel):
@@ -87,10 +88,8 @@ class ClientApplicationOut(ClientApplicationBase):
 
 
 class TokenData(BaseModel):
-    user_name: str
-    role: RoleType
-    groups: str
-    admin: bool
+    sub: str
+    client_type: ClientType
 
 
 class Token(BaseModel):

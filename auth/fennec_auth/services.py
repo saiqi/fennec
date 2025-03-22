@@ -196,7 +196,7 @@ async def update_active_status(
 async def update_external_status(
     session: AsyncSession, user: User, update_data: ExternalStatusUpdate
 ) -> User:
-    user.is_external_user = update_data.is_external
+    user.is_external = update_data.is_external
     await session.commit()
     await session.refresh(user)
     return user
@@ -348,6 +348,7 @@ def create_access_token(model: User | ClientApplication, scopes: list[str]) -> s
         "groups": [model.groups.name] if model.groups else [],
         "aud": list(set(scope.split(":")[0] for scope in scopes)),
         "scope": " ".join(scopes),
+        "client_type": "user" if isinstance(model, User) else "service",
     }
 
     return create_jwt_token(data=claims, expires_delta=expires_delta)
@@ -369,3 +370,7 @@ def check_permissions(model: User | ClientApplication, scopes: list[str]) -> boo
         ):
             return False
     return True
+
+
+def check_self_permission(model: User | ClientApplication, role: RoleType) -> bool:
+    return check_permissions(model, scopes=[f"{settings.CLIENT_NAME}:{role}"])

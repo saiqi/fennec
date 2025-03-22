@@ -52,22 +52,6 @@ async def test_client() -> AsyncGenerator[AsyncClient, None]:
 
 
 @pytest_asyncio.fixture()
-async def existing_user(session: AsyncSession) -> AsyncGenerator[User, None]:
-    user = User(
-        first_name="Fleury",
-        last_name="Dinallo",
-        user_name="fleury",
-        email="fleury@redstarfc.fr",
-        role="read",
-        password_hash=get_password_hash("password"),
-    )
-    session.add(user)
-    await session.commit()
-    await session.refresh(user)
-    yield user
-
-
-@pytest_asyncio.fixture()
 async def existing_group(session: AsyncSession) -> AsyncGenerator[Group, None]:
     group = Group(name="red-star")
     session.add(group)
@@ -77,14 +61,34 @@ async def existing_group(session: AsyncSession) -> AsyncGenerator[Group, None]:
 
 
 @pytest_asyncio.fixture()
+async def existing_user(
+    session: AsyncSession, existing_group: Group
+) -> AsyncGenerator[User, None]:
+    user = User(
+        first_name="Fleury",
+        last_name="Dinallo",
+        user_name="fleury",
+        email="fleury@redstarfc.fr",
+        role="read",
+        password_hash=get_password_hash("password"),
+        group_id=existing_group.id,
+    )
+    session.add(user)
+    await session.commit()
+    await session.refresh(user)
+    yield user
+
+
+@pytest_asyncio.fixture()
 async def existing_client_application(
-    session: AsyncSession,
+    session: AsyncSession, existing_group: Group
 ) -> AsyncGenerator[ClientApplication, None]:
     client_application = ClientApplication(
         name="red-star-api",
         client_id="red-star-api",
         client_secret_hash=get_password_hash("secret"),
         is_active=True,
+        group_id=existing_group.id,
     )
     session.add(client_application)
     await session.commit()
@@ -94,13 +98,14 @@ async def existing_client_application(
 
 @pytest_asyncio.fixture()
 async def existing_alt_client_application(
-    session: AsyncSession,
+    session: AsyncSession, existing_group: Group
 ) -> AsyncGenerator[ClientApplication, None]:
     client_application = ClientApplication(
         name="red-star-auth",
         client_id="red-star-auth",
         client_secret_hash=get_password_hash("secret"),
         is_active=True,
+        group_id=existing_group.id,
     )
     session.add(client_application)
     await session.commit()

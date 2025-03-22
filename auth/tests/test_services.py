@@ -57,7 +57,7 @@ async def test_create_user_happy_path(session: AsyncSession) -> None:
         random_password.return_value = "random"
         created_user = await services.create_user(session, user_data=user_data)
         assert created_user.is_active
-        assert created_user.is_external_user
+        assert created_user.is_external
         assert created_user.has_temporary_password
 
         db_result = await session.execute(
@@ -757,9 +757,10 @@ async def test_create_access_token_happy_path(
         audience=existing_client_application.name,
     )
     assert token_data["sub"] == existing_user.user_name
-    assert token_data["groups"] == []
+    assert token_data["groups"] == ["red-star"]
     assert token_data["iss"] == settings.CLIENT_NAME
     assert token_data["scope"] == f"{existing_client_application.name}:read"
     assert token_data["aud"] == [existing_client_application.name]
     assert isinstance(token_data["exp"], int)
     assert isinstance(token_data["iat"], int)
+    assert token_data["client_type"] == "user"
