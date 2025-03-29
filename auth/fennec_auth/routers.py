@@ -1,14 +1,17 @@
 from typing import Annotated, Any
 from fastapi import APIRouter, Depends, HTTPException, status, Form, Body
 from sqlalchemy.ext.asyncio import AsyncSession
-from fennec_auth.schemas import Token, GroupOut, GroupCreate
-from fennec_auth.dependencies import get_session, get_current_internal_client
+from fennec_auth.schemas import Token, GroupOut, GroupCreate, GroupUpdate, UserOut
+from fennec_auth.dependencies import (
+    get_session,
+    get_current_internal_client,
+    get_current_active_client,
+)
 import fennec_auth.services as services
 from fennec_auth.models import User, ClientApplication
 
 
 group_router = APIRouter(prefix="/groups", tags=["admin"])
-
 
 not_enough_permission_error = HTTPException(
     status_code=status.HTTP_403_FORBIDDEN, detail="Not enough permissions"
@@ -38,6 +41,72 @@ async def create_group(
     if not services.check_self_permission(current_client, role="admin"):
         raise not_enough_permission_error
     return await services.create_group(session, group_data)
+
+
+user_router = APIRouter(prefix="/users", tags=["users"])
+
+
+@user_router.get("", response_model=list[UserOut], status_code=status.HTTP_200_OK)
+async def list_users(
+    session: Annotated[AsyncSession, Depends(get_session)],
+    current_client: Annotated[
+        User | ClientApplication, Depends(get_current_internal_client)
+    ],
+) -> Any:
+    if not services.check_self_permission(current_client, role="read"):
+        raise not_enough_permission_error
+    return await services.list_users(session)
+
+
+@user_router.get("/me", response_model=UserOut, status_code=status.HTTP_200_OK)
+async def get_user_me(
+    session: Annotated[AsyncSession, Depends(get_session)],
+    current_client: Annotated[
+        User | ClientApplication, Depends(get_current_active_client)
+    ],
+) -> Any:
+    return current_client
+
+
+@user_router.get("/{name}", response_model=UserOut, status_code=status.HTTP_200_OK)
+async def get_user(
+    session: Annotated[AsyncSession, Depends(get_session)],
+    current_client: Annotated[
+        User | ClientApplication, Depends(get_current_internal_client)
+    ],
+    name: str,
+) -> Any:
+    if not services.check_self_permission(current_client, role="read"):
+        raise not_enough_permission_error
+    user = await services.get_user_by_user_name(session, user_name=name)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail=f"User {name} not found"
+        )
+    return user
+
+
+@user_router.put(
+    "/{name}/groups", response_model=UserOut, status_code=status.HTTP_200_OK
+)
+async def update_user_groups(
+    session: Annotated[AsyncSession, Depends(get_session)],
+    current_client: Annotated[
+        User | ClientApplication, Depends(get_current_internal_client)
+    ],
+    name: str,
+    group_update_data: Annotated[GroupUpdate, Body(...)],
+) -> Any:
+    if not services.check_self_permission(current_client, role="admin"):
+        raise not_enough_permission_error
+    user = await services.get_user_by_user_name(session, user_name=name)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail=f"User {name} not found"
+        )
+    return await services.update_groups(
+        session, model=current_client, update_data=group_update_data
+    )
 
 
 auth_router = APIRouter(prefix="/auth", tags=["auth"])

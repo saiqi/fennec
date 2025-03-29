@@ -52,7 +52,7 @@ async def get_group_by_name(session: AsyncSession, name: str) -> Group | None:
 
 async def create_group(session: AsyncSession, group_data: GroupCreate) -> Group:
     if await get_group_by_name(session, name=group_data.name):
-        raise AlreadyRegisteredGroup(f"Group {group_data.name} already exists")
+        raise AlreadyRegisteredGroup(group_data.name)
     db_obj = Group(name=group_data.name)
     session.add(db_obj)
     await session.commit()
@@ -175,7 +175,7 @@ async def update_groups(
 ) -> User | ClientApplication:
     group = await get_group_by_name(session, name=update_data.name)
     if not group:
-        raise GroupNotFound(f"Group {update_data.name} not found")
+        raise GroupNotFound(update_data.name)
     model.groups = group
     await session.commit()
     await session.refresh(model)

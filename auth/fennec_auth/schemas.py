@@ -1,5 +1,5 @@
 from typing import Annotated, Literal
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, ConfigDict
 
 allowed_roles = ["read", "write", "admin"]
 RoleType = Annotated[str, Literal[tuple(allowed_roles)]]
@@ -44,6 +44,8 @@ class GroupCreate(GroupBase):
 class GroupOut(GroupBase):
     id: int
 
+    model_config = ConfigDict(from_attributes=True)
+
 
 class UserBase(BaseModel):
     first_name: str
@@ -61,9 +63,10 @@ class UserOut(UserBase):
     id: int
     is_active: bool
     has_temporary_password: bool
-    is_external_user: bool
+    is_external: bool
     groups: GroupOut | None
-    permissions: list[PermissionUpdate] = Field(default_factory=list)
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class UserPublic(UserBase):

@@ -1,4 +1,4 @@
-from typing import AsyncGenerator
+from typing import AsyncGenerator, Callable, Any
 import pytest
 import pytest_asyncio
 from httpx import AsyncClient
@@ -86,6 +86,26 @@ async def self_write_permission(
     await session.commit()
     await session.refresh(permission)
     yield permission
+
+
+@pytest.fixture
+def permission_factory(
+    self_read_permission: Permission,
+    self_write_permission: Permission,
+    self_admin_permission: Permission,
+) -> Callable[[str], Permission]:
+    def _inner(p: str) -> Permission:
+        if p not in {"read", "write", "admin"}:
+            raise ValueError(f"Unkown permission {p}")
+
+        if p == "read":
+            return self_read_permission
+        elif p == "write":
+            return self_write_permission
+        else:
+            return self_admin_permission
+
+    return _inner
 
 
 @pytest.mark.asyncio
@@ -347,95 +367,77 @@ async def test_login_failed_when_scopes_is_invalid(
     assert resp.status_code == 422
 
 
-@pytest.mark.asyncio
-async def test_user_internal_can_list_groups(
-    session: AsyncSession,
-    test_client: AsyncClient,
-    existing_user: User,
-    self_read_permission: Permission,
-) -> None:
-    existing_user.permissions.append(self_read_permission)
-    existing_user.is_external = False
-    await session.commit()
-
-    resp = await test_client.get(
-        "/api/v1/groups",
-        headers=create_self_headers(existing_user, "read"),
-    )
-    assert resp.status_code == 200
-
-
-@pytest.mark.asyncio
-async def test_user_external_cannot_list_groups(
-    session: AsyncSession,
-    test_client: AsyncClient,
-    existing_user: User,
-    self_read_permission: Permission,
-) -> None:
-    existing_user.permissions.append(self_read_permission)
-    await session.commit()
-
-    resp = await test_client.get(
-        "/api/v1/groups",
-        headers=create_self_headers(existing_user, "read"),
-    )
-    assert resp.status_code == 403
-
-
-@pytest.mark.asyncio
-async def test_user_internal_admin_can_create_group(
-    session: AsyncSession,
-    test_client: AsyncClient,
-    existing_user: User,
-    self_admin_permission: Permission,
-) -> None:
-    existing_user.permissions.append(self_admin_permission)
-    existing_user.is_external = False
-    await session.commit()
-
-    resp = await test_client.post(
-        "/api/v1/groups",
-        headers=create_self_headers(existing_user, "admin"),
-        json={"name": "besiktas"},
-    )
-
-    assert resp.status_code == 201
+test_cases = [
+    # --- Groups endpoints ---
+    # Internal user with read should succeed in GET groups
+    ("/api/v1/groups", "GET", "read", False, None, 200),
+    # External user with read should be forbidden in GET groups
+    ("/api/v1/groups", "GET", "read", True, None, 403),
+    # Internal user with admin can create a group
+    ("/api/v1/groups", "POST", "admin", False, {"name": "besiktas"}, 201),
+    # Internal user with read cannot create a group
+    ("/api/v1/groups", "POST", "read", False, {"name": "besiktas"}, 403),
+    # External user with admin cannot create a group
+    ("/api/v1/groups", "POST", "admin", True, {"name": "besiktas"}, 403),
+    # Internal user with admin cannot create an existing group
+    ("/api/v1/groups", "POST", "admin", False, {"name": "red-star"}, 400),
+    # --- Users endpoints ---
+    # Internal user with read should succeed in GET users
+    ("/api/v1/users", "GET", "read", False, None, 200),
+    # External user with read should be forbidden in GET users
+    ("/api/v1/users", "GET", "read", True, None, 403),
+    # Any user should succeed in GET me
+    ("/api/v1/users/me", "GET", "read", True, None, 200),
+    # Internal user with read should succeed in GET users by name
+    ("/api/v1/users/fleury", "GET", "read", False, None, 200),
+    # External user with read should be forbidden in GET users by name
+    ("/api/v1/users/fleury", "GET", "read", True, None, 403),
+    # Internal user with read should fail in GET users by name when user is not known
+    ("/api/v1/users/unknown", "GET", "read", False, None, 404),
+    # Internal user with admin can update a user's group
+    ("/api/v1/users/fleury/groups", "PUT", "admin", False, {"name": "red-star"}, 200),
+    # Internal user with admin cannot update a user's group to an unkwnown group
+    ("/api/v1/users/fleury/groups", "PUT", "admin", False, {"name": "unknown"}, 404),
+    # Internal user with read can update a user's group
+    ("/api/v1/users/fleury/groups", "PUT", "read", False, {"name": "red-star"}, 403),
+    # External user with admin can update a user's group
+    ("/api/v1/users/fleury/groups", "PUT", "admin", True, {"name": "red-star"}, 403),
+]
 
 
 @pytest.mark.asyncio
-async def test_user_internal_read_cannot_create_group(
+@pytest.mark.parametrize(
+    "endpoint, method, permission_required, is_external, req_body, expected_status",
+    test_cases,
+)
+async def test_endpoint_permissions(
     session: AsyncSession,
     test_client: AsyncClient,
     existing_user: User,
-    self_read_permission: Permission,
+    permission_factory: Callable[[str], Permission],
+    endpoint: str,
+    method: str,
+    permission_required: str,
+    is_external: bool,
+    req_body: dict[str, Any],
+    expected_status: int,
 ) -> None:
-    existing_user.permissions.append(self_read_permission)
-    existing_user.is_external = False
+    permission = permission_factory(permission_required)
+    existing_user.permissions.append(permission)
+    existing_user.is_external = is_external
     await session.commit()
 
-    resp = await test_client.post(
-        "/api/v1/groups",
-        headers=create_self_headers(existing_user, "read"),
-        json={"name": "besiktas"},
-    )
+    headers = create_self_headers(existing_user, permission_required)
 
-    assert resp.status_code == 403
+    if method.upper() == "GET":
+        resp = await test_client.get(endpoint, headers=headers)
+    elif method.upper() == "POST":
+        resp = await test_client.post(endpoint, headers=headers, json=req_body)
+    elif method.upper() == "PUT":
+        resp = await test_client.put(endpoint, headers=headers, json=req_body)
+    elif method.upper() == "DELETE":
+        resp = await test_client.delete(endpoint, headers=headers)
+    else:
+        raise ValueError(f"Unsupported method: {method}")
 
-
-@pytest.mark.asyncio
-async def test_user_external_admin_can_create_group(
-    session: AsyncSession,
-    test_client: AsyncClient,
-    existing_user: User,
-    self_admin_permission: Permission,
-) -> None:
-    existing_user.permissions.append(self_admin_permission)
-    await session.commit()
-
-    resp = await test_client.post(
-        "/api/v1/groups",
-        headers=create_self_headers(existing_user, "admin"),
-        json={"name": "besiktas"},
-    )
-
-    assert resp.status_code == 403
+    assert resp.status_code == expected_status

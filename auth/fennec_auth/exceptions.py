@@ -7,7 +7,8 @@ class AlreadyRegisteredUser(FennecAuthException):
 
 
 class AlreadyRegisteredGroup(FennecAuthException):
-    pass
+    def __init__(self, group_name: str) -> None:
+        self.group_name = group_name
 
 
 class AlreadyRegisteredClientApplication(FennecAuthException):
@@ -19,7 +20,8 @@ class AlreadyAttachedPermission(FennecAuthException):
 
 
 class GroupNotFound(FennecAuthException):
-    pass
+    def __init__(self, group_name: str) -> None:
+        self.group_name = group_name
 
 
 class ClientApplicationNotFound(FennecAuthException):
