@@ -1,7 +1,15 @@
 from typing import Annotated, Any
 from fastapi import APIRouter, Depends, HTTPException, status, Form, Body
 from sqlalchemy.ext.asyncio import AsyncSession
-from fennec_auth.schemas import Token, GroupOut, GroupCreate, GroupUpdate, UserOut
+from fennec_auth.schemas import (
+    Token,
+    GroupOut,
+    GroupCreate,
+    GroupUpdate,
+    UserOut,
+    ActiveStatusUpdate,
+    ExternalStatusUpdate,
+)
 from fennec_auth.dependencies import (
     get_session,
     get_current_internal_client,
@@ -106,6 +114,52 @@ async def update_user_groups(
         )
     return await services.update_groups(
         session, model=current_client, update_data=group_update_data
+    )
+
+
+@user_router.put(
+    "/{name}/activity-status", response_model=UserOut, status_code=status.HTTP_200_OK
+)
+async def update_user_activity_status(
+    session: Annotated[AsyncSession, Depends(get_session)],
+    current_client: Annotated[
+        User | ClientApplication, Depends(get_current_internal_client)
+    ],
+    name: str,
+    activity_status_update_data: Annotated[ActiveStatusUpdate, Body(...)],
+) -> Any:
+    if not services.check_self_permission(current_client, role="admin"):
+        raise not_enough_permission_error
+    user = await services.get_user_by_user_name(session, user_name=name)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail=f"User {name} not found"
+        )
+    return await services.update_active_status(
+        session, model=current_client, update_data=activity_status_update_data
+    )
+
+
+@user_router.put(
+    "/{name}/external-status", response_model=UserOut, status_code=status.HTTP_200_OK
+)
+async def update_user_external_status(
+    session: Annotated[AsyncSession, Depends(get_session)],
+    current_client: Annotated[
+        User | ClientApplication, Depends(get_current_internal_client)
+    ],
+    name: str,
+    external_status_update_data: Annotated[ExternalStatusUpdate, Body(...)],
+) -> Any:
+    if not services.check_self_permission(current_client, role="admin"):
+        raise not_enough_permission_error
+    user = await services.get_user_by_user_name(session, user_name=name)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail=f"User {name} not found"
+        )
+    return await services.update_external_status(
+        session, model=current_client, update_data=external_status_update_data
     )
 
 

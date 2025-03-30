@@ -194,12 +194,14 @@ async def update_active_status(
 
 
 async def update_external_status(
-    session: AsyncSession, user: User, update_data: ExternalStatusUpdate
-) -> User:
-    user.is_external = update_data.is_external
+    session: AsyncSession,
+    model: User | ClientApplication,
+    update_data: ExternalStatusUpdate,
+) -> User | ClientApplication:
+    model.is_external = update_data.is_external
     await session.commit()
-    await session.refresh(user)
-    return user
+    await session.refresh(model)
+    return model
 
 
 async def _update_password(session: AsyncSession, user: User, password: str) -> User:

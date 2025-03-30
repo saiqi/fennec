@@ -398,10 +398,64 @@ test_cases = [
     ("/api/v1/users/fleury/groups", "PUT", "admin", False, {"name": "red-star"}, 200),
     # Internal user with admin cannot update a user's group to an unkwnown group
     ("/api/v1/users/fleury/groups", "PUT", "admin", False, {"name": "unknown"}, 404),
-    # Internal user with read can update a user's group
+    # Internal user with read cannot update a user's group
     ("/api/v1/users/fleury/groups", "PUT", "read", False, {"name": "red-star"}, 403),
     # External user with admin can update a user's group
     ("/api/v1/users/fleury/groups", "PUT", "admin", True, {"name": "red-star"}, 403),
+    # Internal user with admin can update a user's activity status
+    (
+        "/api/v1/users/fleury/activity-status",
+        "PUT",
+        "admin",
+        False,
+        {"is_active": False},
+        200,
+    ),
+    # Internal user with read cannot update a user's activity status
+    (
+        "/api/v1/users/fleury/activity-status",
+        "PUT",
+        "read",
+        False,
+        {"is_active": False},
+        403,
+    ),
+    # External user with admin cannot update a user's activity status
+    (
+        "/api/v1/users/fleury/activity-status",
+        "PUT",
+        "admin",
+        True,
+        {"is_active": False},
+        403,
+    ),
+    # Internal user with admin can update a user's external status
+    (
+        "/api/v1/users/fleury/external-status",
+        "PUT",
+        "admin",
+        False,
+        {"is_external": False},
+        200,
+    ),
+    # Internal user with read cannot update a user's external status
+    (
+        "/api/v1/users/fleury/external-status",
+        "PUT",
+        "read",
+        False,
+        {"is_external": False},
+        403,
+    ),
+    # External user with admin cannot update a user's external status
+    (
+        "/api/v1/users/fleury/external-status",
+        "PUT",
+        "admin",
+        True,
+        {"is_external": False},
+        403,
+    ),
 ]
 
 
